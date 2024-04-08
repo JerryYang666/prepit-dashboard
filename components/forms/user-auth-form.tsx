@@ -11,11 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleSignInButton from "../github-auth-button";
+import { useSession } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -41,6 +42,12 @@ export default function UserAuthForm() {
       callbackUrl: callbackUrl ?? "/dashboard",
     });
   };
+
+  const { data: session } = useSession();
+  if (session) {
+    // Redirect to the dashboard if the user is already authenticated
+    redirect("/dashboard");
+  }
 
   return (
     <>
