@@ -15,8 +15,9 @@ import { useSearchParams, redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import GoogleSignInButton from "../github-auth-button";
+import GithubSignInButton from "../github-auth-button";
 import { useSession } from "next-auth/react";
+import GoogleSignInButton from "../google-auth-button";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -91,6 +92,7 @@ export default function UserAuthForm() {
         </div>
       </div>
       <GoogleSignInButton />
+      <GithubSignInButton />
     </>
   );
 }
