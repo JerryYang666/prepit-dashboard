@@ -22,14 +22,20 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
-        const user = { id: "1", name: "John", email: credentials?.email };
+        const emailPre = credentials?.email.split('@')[0] ?? 'abcd';
+        const matches = emailPre.match(/[a-zA-Z]+/g)?.join('') ?? 'abcd';
+        const user = {
+          id: "1",
+          name: matches,
+          email: credentials?.email,
+          image: `https://source.boringavatars.com/beam/120/${matches}?colors=ADE6EA,BDD5EA,CDEADC,89C1E8,B9E1F0`,
+        };
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
           return null;
-
           // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
         }
       },
