@@ -31,6 +31,8 @@ import {
   AlignStartVertical,
   BookMarked,
   BotMessageSquare,
+  CircleUserRound,
+  LogOut,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -39,8 +41,9 @@ export const Icons = {
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,
+  logout: LogOut,
   close: X,
-  profile: User2Icon,
+  profile: CircleUserRound,
   spinner: Loader2,
   kanban: CircuitBoardIcon,
   chevronLeft: ChevronLeft,
