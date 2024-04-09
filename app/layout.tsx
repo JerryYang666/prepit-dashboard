@@ -9,8 +9,8 @@ import { getServerSession } from "next-auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next Shadcn",
-  description: "Basic dashboard with Next.js and Shadcn",
+  title: "prepit.ai - Dashboard",
+  description: "Your AI interviewer dashboard",
 };
 
 export default async function RootLayout({
