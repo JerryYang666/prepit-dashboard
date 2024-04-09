@@ -24,11 +24,13 @@ import {
   Settings,
   SunMedium,
   Trash,
-  Twitter,
   User,
   User2Icon,
   UserX2Icon,
   X,
+  AlignStartVertical,
+  BookMarked,
+  BotMessageSquare,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -103,6 +105,8 @@ export const Icons = {
       <path fill="none" d="M0 0h48v48H0z"></path>
     </svg>
   ),
-  twitter: Twitter,
+  caseBook: BookMarked,
+  interviews: BotMessageSquare,
+  feedback: AlignStartVertical,
   check: Check,
 };
