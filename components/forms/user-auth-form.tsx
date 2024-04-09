@@ -12,12 +12,14 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useSearchParams, redirect } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import GithubSignInButton from "../github-auth-button";
 import { useSession } from "next-auth/react";
 import GoogleSignInButton from "../google-auth-button";
+import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
+import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -29,11 +31,15 @@ export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
+  const [lastUsedLoginProvider, setLastUsedLoginProvider] = useState<
+    string | null
+  >(null);
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = async (data: UserFormValue) => {
+    localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "email");
     signIn("credentials", {
       email: data.email,
       callbackUrl: callbackUrl ?? "/dashboard",
@@ -45,6 +51,12 @@ export default function UserAuthForm() {
     // Redirect to the dashboard if the user is already authenticated
     redirect("/dashboard");
   }
+
+  useEffect(() => {
+    setLastUsedLoginProvider(
+      localStorage.getItem(lastUsedLoginProviderLocalStorageKey),
+    );
+  }, []);
 
   return (
     <>
@@ -60,18 +72,24 @@ export default function UserAuthForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="Enter your email..."
-                    disabled={loading}
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email..."
+                      disabled={loading}
+                      {...field}
+                    />
+                    {lastUsedLoginProvider === "email" && (
+                      <Badge className="absolute -top-2 -right-2">
+                        Last Used
+                      </Badge>
+                    )}
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <Button disabled={loading} className="ml-auto w-full" type="submit">
             Continue With Email
           </Button>
@@ -87,8 +105,18 @@ export default function UserAuthForm() {
           </span>
         </div>
       </div>
-      <GoogleSignInButton />
-      <GithubSignInButton />
+      <div className="relative">
+        <GoogleSignInButton />
+        {lastUsedLoginProvider === "google" && (
+          <Badge className="absolute -top-2 -right-2">Last Used</Badge>
+        )}
+      </div>
+      <div className="relative">
+        <GithubSignInButton />
+        {lastUsedLoginProvider === "github" && (
+          <Badge className="absolute -top-2 -right-2">Last Used</Badge>
+        )}
+      </div>
     </>
   );
 }
