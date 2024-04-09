@@ -1,0 +1,1 @@
+export const lastUsedLoginProviderLocalStorageKey = "prepit.ai-last-used-login-provider";

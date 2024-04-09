@@ -8,10 +8,38 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? "",
+      // profile(profile) {
+      //   fetch("https://api.sampleapis.com/coffee/hot")
+      //     .then((res) => res.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //       console.log(profile);
+      //     });
+      //   return {
+      //     id: profile.id,
+      //     name: profile.login,
+      //     email: profile.email,
+      //     image: profile.avatar_url,
+      //   };
+      // },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      // profile(profile) {
+      //   fetch("https://api.sampleapis.com/coffee/hot")
+      //     .then((res) => res.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //       console.log(profile);
+      //     });
+      //   return {
+      //     id: profile.email,
+      //     name: profile.name,
+      //     email: profile.email,
+      //     image: profile.picture,
+      //   };
+      // },
     }),
     CredentialProvider({
       credentials: {
@@ -22,8 +50,8 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
-        const emailPre = credentials?.email.split('@')[0] ?? 'abcd';
-        const matches = emailPre.match(/[a-zA-Z]+/g)?.join('') ?? 'abcd';
+        const emailPre = credentials?.email.split("@")[0] ?? "abcd";
+        const matches = emailPre.match(/[a-zA-Z]+/g)?.join("") ?? "abcd";
         const user = {
           id: "1",
           name: matches,
