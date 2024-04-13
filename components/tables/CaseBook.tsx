@@ -34,6 +34,60 @@ export default function CaseBook() {
         "Our client, Greg Wilkinson, is the Dean of the business school at a mid-sized, four-year...",
       image: "/case2.png",
     },
+    {
+      title: "Distero",
+      description:
+        "Our client, Distero, is a large grocery distributor based out of the United States...",
+      image: "/case0.png",
+    },
+    {
+      title: "NFL Mexico",
+      description:
+        "Your client is a wealthy former founder and CEO of a multi-national company interested...",
+      image: "/case1.png",
+    },
+    {
+      title: "Business School",
+      description:
+        "Our client, Greg Wilkinson, is the Dean of the business school at a mid-sized, four-year...",
+      image: "/case2.png",
+    },
+    {
+      title: "Distero",
+      description:
+        "Our client, Distero, is a large grocery distributor based out of the United States...",
+      image: "/case0.png",
+    },
+    {
+      title: "NFL Mexico",
+      description:
+        "Your client is a wealthy former founder and CEO of a multi-national company interested...",
+      image: "/case1.png",
+    },
+    {
+      title: "Business School",
+      description:
+        "Our client, Greg Wilkinson, is the Dean of the business school at a mid-sized, four-year...",
+      image: "/case2.png",
+    },
+    {
+      title: "Distero",
+      description:
+        "Our client, Distero, is a large grocery distributor based out of the United States...",
+      image: "/case0.png",
+    },
+    {
+      title: "NFL Mexico",
+      description:
+        "Your client is a wealthy former founder and CEO of a multi-national company interested...",
+      image: "/case1.png",
+    },
+    {
+      title: "Business School",
+      description:
+        "Our client, Greg Wilkinson, is the Dean of the business school at a mid-sized, four-year...",
+      image: "/case2.png",
+    },
     // Add more books here...
   ];
 
