@@ -143,7 +143,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         loading={loading}
       /> */}
       <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
+        {/* <Heading title={title} description={description} /> */}
         {initialData && (
           <Button
             disabled={loading}
@@ -260,9 +260,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
+          {/* <Button disabled={loading} className="ml-auto" type="submit">
             {action}
-          </Button>
+          </Button> */}
         </form>
       </Form>
     </>
