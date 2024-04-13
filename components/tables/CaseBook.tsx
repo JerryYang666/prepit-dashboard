@@ -11,6 +11,7 @@ import {
   PaginationContent,
   Pagination,
 } from "@/components/ui/pagination";
+import { getAgents } from "@/app/api/agent/agent";
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
