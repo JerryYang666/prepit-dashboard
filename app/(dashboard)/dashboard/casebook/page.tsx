@@ -1,6 +1,6 @@
 import BreadCrumb from "@/components/breadcrumb";
 import { columns } from "@/components/tables/employee-tables/columns";
-import { EmployeeTable } from "@/components/tables/employee-tables/employee-table";
+import CaseBook from "@/components/tables/CaseBook";
 import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
-const breadcrumbItems = [{ title: "Employee", link: "/dashboard/employee" }];
+const breadcrumbItems = [{ title: "Case Book", link: "/dashboard/casebook" }];
 
 type paramsProps = {
   searchParams: {
@@ -37,13 +37,10 @@ export default async function page({ searchParams }: paramsProps) {
         <BreadCrumb items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">
-          <Heading
-            title={`Employee (${totalUsers})`}
-            description="Manage employees (Server side table functionalities.)"
-          />
+          <Heading title={`Case Book`} description="Manage your cases" />
 
           <Link
-            href={"/dashboard/employee/new"}
+            href={"/dashboard/casebook/edit"}
             className={cn(buttonVariants({ variant: "default" }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
@@ -51,14 +48,7 @@ export default async function page({ searchParams }: paramsProps) {
         </div>
         <Separator />
 
-        <EmployeeTable
-          searchKey="country"
-          pageNo={page}
-          columns={columns}
-          totalUsers={totalUsers}
-          data={employee}
-          pageCount={pageCount}
-        />
+        <CaseBook />
       </div>
     </>
   );
