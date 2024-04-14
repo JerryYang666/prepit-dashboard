@@ -15,9 +15,23 @@ const breadcrumbItems = [
   { title: "Edit", link: "/dashboard/casebook/edit" },
 ];
 export default function page() {
+  const [caseFormData, setCaseFormData] = useState({});
   const pathname = usePathname();
   const currentMode =
     pathname.split("/").pop() === "new" ? "Adding" : "Editing";
+
+  const handleSave = () => {
+    // Combine data or send them separately to an API endpoint
+    console.log("Saving case form data: ", caseFormData);
+    toast("Event has been created.");
+  };
+
+  const CaseMetadataFormInitialData = {
+    agent_name: "John Doe",
+    agent_description: "This is a description",
+    agent_cover: "https://via.placeholder.com/150",
+    creator: "Jane Doe",
+  };
 
   return (
     <>
@@ -32,18 +46,14 @@ export default function page() {
           <Button
             variant="default"
             className="absolute right-12 top-32"
-            // onClick={() => toast("Event has been created.")}
+            onClick={() => handleSave()}
           >
             Save
           </Button>
         </div>
         <CaseMetadataForm
-          categories={[
-            { _id: "shirts", name: "shirts" },
-            { _id: "pants", name: "pants" },
-          ]}
-          initialData={null}
-          key={null}
+          initialData={CaseMetadataFormInitialData}
+          onFormDataChange={setCaseFormData}
         />
         <KanbanBoard />
       </div>

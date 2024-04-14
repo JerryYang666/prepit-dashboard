@@ -1,241 +1,121 @@
-"use client";
 import * as z from "zod";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Trash } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "../ui/use-toast";
-const ImgSchema = z.object({
-  fileName: z.string(),
-  name: z.string(),
-  fileSize: z.number(),
-  size: z.number(),
-  fileKey: z.string(),
-  key: z.string(),
-  fileUrl: z.string(),
-  url: z.string(),
-});
-export const IMG_MAX_LIMIT = 3;
+import { use, useEffect } from "react";
+
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(3, { message: "Product Name must be at least 3 characters" }),
-  imgUrl: z
-    .array(ImgSchema)
-    .max(IMG_MAX_LIMIT, { message: "You can only add up to 3 images" })
-    .min(1, { message: "At least one image must be added." }),
-  description: z
-    .string()
-    .min(3, { message: "Product description must be at least 3 characters" }),
-  price: z.coerce.number(),
-  category: z.string().min(1, { message: "Please select a category" }),
+  agent_name: z.string().max(255, "Agent name must be at most 255 characters"),
+  agent_description: z.string(),
+  agent_cover: z.string().url("Must be a valid URL"),
+  creator: z.string(),
 });
 
 type CaseMetadataFormValues = z.infer<typeof formSchema>;
 
 interface CaseMetadataFormProps {
-  initialData: any | null;
-  categories: any;
+  initialData: CaseMetadataFormValues | null;
+  onFormDataChange: (data: CaseMetadataFormValues) => void; // Callback to update parent state
 }
 
 export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
   initialData,
-  categories,
+  onFormDataChange,
 }) => {
-  const params = useParams();
-  const router = useRouter();
-  const { toast } = useToast();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [imgLoading, setImgLoading] = useState(false);
-  const title = initialData ? "Edit product" : "Create product";
-  const description = initialData ? "Edit a product." : "Add a new product";
-  const toastMessage = initialData ? "Product updated." : "Product created.";
-  const action = initialData ? "Save changes" : "Create";
-
-  const defaultValues = initialData
-    ? initialData
-    : {
-        name: "",
-        description: "",
-        price: 0,
-        imgUrl: [],
-        category: "",
-      };
+  const defaultValues = initialData || {
+    agent_name: "",
+    agent_description: "",
+    agent_cover: "",
+    creator: "",
+  };
 
   const form = useForm<CaseMetadataFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+    },
   });
 
-  const onSubmit = async (data: CaseMetadataFormValues) => {
-    try {
-      setLoading(true);
-      if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
-      } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
-      }
-      router.refresh();
-      router.push(`/dashboard/products`);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Ensure initial data is also lifted to the parent
+  useEffect(() => {
+    onFormDataChange(defaultValues);
+  }, []);
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
-    } catch (error: any) {
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
-
-  const triggerImgUrlValidation = () => form.trigger("imgUrl");
+  // Use effect to update parent state whenever the form state changes
+  form.watch((data) => {
+    onFormDataChange(data as CaseMetadataFormValues);
+  });
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        {/* <Heading title={title} description={description} /> */}
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        )}
+    <Form {...form}>
+      <div className="space-y-8 w-full">
+        <div className="md:grid md:grid-cols-3 gap-8">
+          <FormField
+            control={form.control}
+            name="agent_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Agent Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter agent name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="agent_description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Agent Description</FormLabel>
+                <FormControl>
+                  <Input placeholder="Describe the agent" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="agent_cover"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Agent Cover Image URL</FormLabel>
+                <FormControl>
+                  <Input
+                    type="url"
+                    placeholder="Enter URL of the cover image"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="creator"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Creator</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter creator's name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </div>
-      <Separator />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
-          <div className="md:grid md:grid-cols-3 gap-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Product name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Product description"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a category"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {/* @ts-ignore  */}
-                      {categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </form>
-      </Form>
-    </>
+    </Form>
   );
 };
