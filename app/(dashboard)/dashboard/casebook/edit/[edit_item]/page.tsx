@@ -7,7 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState, Suspense } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  addAgent,
+  updateAgent,
+  deleteAgent,
+  getAgentbyID,
+} from "@/app/api/agent/agent";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -18,9 +25,10 @@ export default function CaseEdit() {
   const caseFormDataLocalStorageKey = "prepit-addCase-caseFormData";
   const caseStepsLocalStorageKey = "prepit-addCase-caseSteps";
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const pathname = usePathname();
-  const currentMode =
-    pathname.split("/").pop() === "new" ? "Adding" : "Editing";
+  const pathEnding = pathname.split("/").pop();
+  const currentMode = pathEnding === "new" ? "Adding" : "Editing";
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -35,6 +43,12 @@ export default function CaseEdit() {
     loadInitialState(caseStepsLocalStorageKey, {}),
   );
 
+  const checkUUID = (uuid: string) => {
+    return uuid.match(
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+    );
+  };
+
   useEffect(() => {
     let formDataLoaded = false;
     let stepsDataLoaded = false;
@@ -45,23 +59,34 @@ export default function CaseEdit() {
       }
     };
 
-    // Load existing data from local storage for case form data
-    const storedCaseFormData = localStorage.getItem(
-      caseFormDataLocalStorageKey,
-    );
-    if (storedCaseFormData) {
-      setCaseFormData(JSON.parse(storedCaseFormData));
+    if (currentMode === "Adding") {
+      formDataLoaded = true;
+      stepsDataLoaded = true;
+      checkDataLoaded();
+    } else if (currentMode === "Editing") {
+      if (pathEnding && checkUUID(pathEnding)) {
+        getAgentbyID({ agent_id: pathEnding }).then((data) => {
+          // parse each value in the system_prompt object as a string
+          let sys_prompt = data.system_prompt;
+          for (const key in sys_prompt) {
+            sys_prompt[key] = JSON.parse(sys_prompt[key]);
+          }
+          setCaseSteps(sys_prompt);
+          setCaseFormData({
+            agent_name: data.agent_name,
+            agent_description: data.agent_description,
+            agent_cover: data.agent_cover,
+            creator: data.creator,
+          });
+          formDataLoaded = true;
+          stepsDataLoaded = true;
+          checkDataLoaded();
+        });
+      } else {
+        toast.error("No case ID provided");
+        router.push("/dashboard/casebook");
+      }
     }
-    formDataLoaded = true;
-
-    // Load existing data from local storage for case steps
-    const storedCaseSteps = localStorage.getItem(caseStepsLocalStorageKey);
-    if (storedCaseSteps) {
-      setCaseSteps(JSON.parse(storedCaseSteps));
-    }
-    stepsDataLoaded = true;
-
-    checkDataLoaded();
   }, []);
 
   useEffect(() => {
@@ -80,9 +105,36 @@ export default function CaseEdit() {
   }
 
   const handleSave = () => {
-    console.log("Saving...");
-    console.log(caseFormData);
-    console.log(caseSteps);
+    if (currentMode === "Editing" && pathEnding && checkUUID(pathEnding)) {
+      // update case
+      updateAgent({
+        agent_id: pathEnding,
+        agent_name: caseFormData.agent_name,
+        agent_description: caseFormData.agent_description,
+        agent_cover: caseFormData.agent_cover,
+        creator: caseFormData.creator,
+        status: 1,
+        allow_model_choice: true,
+        system_prompt: caseSteps,
+      }).then(() => {
+        toast.success("Case updated successfully");
+        router.push("/dashboard/casebook");
+      });
+      return;
+    } else if (currentMode === "Adding") {
+      addAgent({
+        agent_name: caseFormData.agent_name,
+        agent_description: caseFormData.agent_description,
+        agent_cover: caseFormData.agent_cover,
+        creator: caseFormData.creator,
+        status: 1,
+        allow_model_choice: true,
+        system_prompt: caseSteps,
+      }).then(() => {
+        toast.success("Case saved successfully");
+        router.push("/dashboard/casebook");
+      });
+    }
   };
 
   return (

@@ -1,6 +1,4 @@
 import request from "@/lib/request";
-import exp from "constants";
-import { string } from "zod";
 
 export interface AgentsResponse {
   agents: Array<{
@@ -15,6 +13,22 @@ export interface AgentsResponse {
     updated_at: string;
   }>;
   total: number;
+}
+
+export interface SingleAgentResponse {
+  agent_id: string;
+  agent_name: string;
+  agent_description: string;
+  agent_cover: string;
+  creator: string;
+  cat_id: string;
+  status: number;
+  allow_model_choice: boolean;
+  model?: string;
+  system_prompt: {
+    [key: number]: string;
+  };
+  updated_at: string;
 }
 
 export interface NewAgent {
@@ -58,6 +72,10 @@ export interface GetAgent {
   search: string;
 }
 
+export interface GetAgentbyID {
+  agent_id: string;
+}
+
 // API paths
 const path = "agents";
 
@@ -65,7 +83,7 @@ const api = {
   addAgent: path + "/add_agent",
   deleteAgent: path + "/delete_agent",
   updateAgent: path + "/update_agent",
-  getAgentbyID: path + "",
+  getAgentbyID: path + "/agent",
   getAgents: path + "/agents",
 };
 
@@ -87,7 +105,7 @@ export function updateAgent(data: UpdateAgent): Promise<UpdateAgent> {
   });
 }
 
-// update agent
+// delete agent
 export function deleteAgent(data: DeleteAgent): Promise<DeleteAgent> {
   return request({
     url: api.deleteAgent,
@@ -102,5 +120,13 @@ export function getAgents(params: GetAgent): Promise<AgentsResponse> {
     url: api.getAgents,
     method: "get",
     params: params,
+  });
+}
+
+// get agent by ID
+export function getAgentbyID(params: GetAgentbyID): Promise<SingleAgentResponse> {
+  return request({
+    url: api.getAgentbyID+"/"+params.agent_id,
+    method: "get",
   });
 }
