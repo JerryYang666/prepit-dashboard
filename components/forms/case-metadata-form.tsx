@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "../ui/use-toast";
-import FileUpload from "../file-upload";
 const ImgSchema = z.object({
   fileName: z.string(),
   name: z.string(),
@@ -134,12 +133,6 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
       <div className="flex items-center justify-between">
         {/* <Heading title={title} description={description} /> */}
         {initialData && (
@@ -159,23 +152,6 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <FormField
-            control={form.control}
-            name="imgUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <FileUpload
-                    onChange={field.onChange}
-                    value={field.value}
-                    onRemove={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
@@ -258,9 +234,6 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
               )}
             />
           </div>
-          {/* <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button> */}
         </form>
       </Form>
     </>
