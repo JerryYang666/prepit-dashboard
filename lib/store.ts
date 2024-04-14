@@ -4,16 +4,11 @@ import { persist } from "zustand/middleware";
 import { Column } from "@/components/kanban/board-column";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
-export type Status = "TODO" | "IN_PROGRESS" | "DONE";
+export type Status = string;
 
-const defaultCols = [
-  {
-    id: "TODO" as const,
-    title: "Todo",
-  },
-] satisfies Column[];
+const defaultCols = [] satisfies Column[];
 
-export type ColumnId = (typeof defaultCols)[number]["id"];
+export type ColumnId = string;
 
 export type Task = {
   id: string;
@@ -29,8 +24,8 @@ export type State = {
 };
 
 export type Actions = {
-  addTask: (title: string, description?: string) => void;
-  addCol: (title: string) => void;
+  addTask: (title: string, colID: string, description?: string) => void;
+  addCol: (title: string) => string;
   dragTask: (id: string | null) => void;
   removeTask: (title: string) => void;
   removeCol: (id: UniqueIdentifier) => void;
@@ -45,11 +40,11 @@ export const useTaskStore = create<State & Actions>()(
       tasks: [],
       columns: defaultCols,
       draggedTask: null,
-      addTask: (title: string, description?: string) =>
+      addTask: (title: string, colID: string, description?: string) =>
         set((state) => ({
           tasks: [
             ...state.tasks,
-            { id: uuid(), title, description, status: "TODO" },
+            { id: uuid(), title, description, status: colID as Status },
           ],
         })),
       updateCol: (id: UniqueIdentifier, newName: string) =>
@@ -58,10 +53,13 @@ export const useTaskStore = create<State & Actions>()(
             col.id === id ? { ...col, title: newName } : col,
           ),
         })),
-      addCol: (title: string) =>
+      addCol: (title: string) => {
+        const id = uuid();
         set((state) => ({
-          columns: [...state.columns, { id: uuid(), title }],
-        })),
+          columns: [...state.columns, { id: id, title }],
+        }));
+        return id;
+      },
       dragTask: (id: string | null) => set({ draggedTask: id }),
       removeTask: (id: string) =>
         set((state) => ({

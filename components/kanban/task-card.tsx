@@ -77,7 +77,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
           <GripVertical />
         </Button>
         <Badge variant={"outline"} className="ml-auto font-semibold">
-          Task
+          {task.description}
         </Badge>
       </CardHeader>
       <CardContent className="px-3 pt-3 pb-6 text-left whitespace-pre-wrap">

@@ -15,6 +15,7 @@ import { useTaskStore } from "@/lib/store";
 
 export default function NewSectionDialog() {
   const addCol = useTaskStore((state) => state.addCol);
+  const addTask = useTaskStore((state) => state.addTask);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +25,9 @@ export default function NewSectionDialog() {
     const { title } = Object.fromEntries(formData);
 
     if (typeof title !== "string") return;
-    addCol(title);
+    const colID = addCol(title);
+    addTask("INS", colID, "Instruction");
+    addTask("INF", colID, "Information");
   };
 
   return (
@@ -36,9 +39,9 @@ export default function NewSectionDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Section</DialogTitle>
+          <DialogTitle>Add New Step</DialogTitle>
           <DialogDescription>
-            What section you want to add today?
+            What is the new step in the interview?
           </DialogDescription>
         </DialogHeader>
         <form
@@ -50,7 +53,7 @@ export default function NewSectionDialog() {
             <Input
               id="title"
               name="title"
-              placeholder="Section title..."
+              placeholder="Step title..."
               className="col-span-4"
             />
           </div>
@@ -58,7 +61,7 @@ export default function NewSectionDialog() {
         <DialogFooter>
           <DialogTrigger asChild>
             <Button type="submit" size="sm" form="todo-form">
-              Add Section
+              Add Step
             </Button>
           </DialogTrigger>
         </DialogFooter>

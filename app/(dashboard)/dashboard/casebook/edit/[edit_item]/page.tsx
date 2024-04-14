@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -42,7 +43,6 @@ export default function CaseEdit() {
             title={`${currentMode} Case`}
             description={`Case ${currentMode}`}
           />
-          {/* <NewTaskDialog /> */}
           <Button
             variant="default"
             className="absolute right-12 top-32"
@@ -51,10 +51,12 @@ export default function CaseEdit() {
             Save
           </Button>
         </div>
+        <Separator />
         <CaseMetadataForm
           initialData={CaseMetadataFormInitialData}
           onFormDataChange={setCaseFormData}
         />
+        <Separator />
         <KanbanBoard />
       </div>
     </>
