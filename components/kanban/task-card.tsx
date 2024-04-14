@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { cva } from "class-variance-authority";
 import { GripVertical } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 
 // export interface Task {
 //   id: UniqueIdentifier;
@@ -81,7 +82,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
         </Badge>
       </CardHeader>
       <CardContent className="px-3 pt-3 pb-6 text-left whitespace-pre-wrap">
-        {task.title}
+        <Textarea />
       </CardContent>
     </Card>
   );
