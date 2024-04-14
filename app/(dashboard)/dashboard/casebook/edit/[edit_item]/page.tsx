@@ -1,22 +1,39 @@
 "use client";
 
 import BreadCrumb from "@/components/breadcrumb";
-import { KanbanBoard } from "@/components/kanban/kanban-board";
+import { CaseStepEditor } from "@/components/forms/case-step-editor";
 import { CaseMetadataForm } from "@/components/forms/case-metadata-form";
 import NewTaskDialog from "@/components/kanban/new-task-dialog";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { Separator } from "@/components/ui/separator";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
   { title: "Edit", link: "/dashboard/casebook/edit" },
 ];
+
 export default function CaseEdit() {
-  const [caseFormData, setCaseFormData] = useState({});
+  const caseFormDataLocalStroageKey = "prepit-addCase-caseFormData";
+  const caseStepsLocalStroageKey = "prepit-addCase-caseSteps";
+
+  // Initialize state directly with local storage data or default values
+  const loadInitialState = (key: string, defaultValue: any) => {
+    if (typeof window === "undefined") return defaultValue;
+    const storedData = localStorage.getItem(key);
+    return storedData ? JSON.parse(storedData) : defaultValue;
+  };
+
+  const [caseFormData, setCaseFormData] = useState(() =>
+    loadInitialState(caseFormDataLocalStroageKey, {}),
+  );
+  const [caseSteps, setCaseSteps] = useState(() =>
+    loadInitialState(caseStepsLocalStroageKey, {}),
+  );
+
   const pathname = usePathname();
   const currentMode =
     pathname.split("/").pop() === "new" ? "Adding" : "Editing";
@@ -24,15 +41,38 @@ export default function CaseEdit() {
   const handleSave = () => {
     // Combine data or send them separately to an API endpoint
     console.log("Saving case form data: ", caseFormData);
-    toast("Event has been created.");
+    console.log("Saving case steps: ", caseSteps);
   };
 
-  const CaseMetadataFormInitialData = {
-    agent_name: "John Doe",
-    agent_description: "This is a description",
-    agent_cover: "https://via.placeholder.com/150",
-    creator: "Jane Doe",
-  };
+  useEffect(() => {
+    // Load existing data from local storage for case form data
+    const storedCaseFormData = localStorage.getItem(
+      caseFormDataLocalStroageKey,
+    );
+    if (storedCaseFormData) {
+      setCaseFormData(JSON.parse(storedCaseFormData));
+    }
+
+    // Load existing data from local storage for case steps
+    const storedCaseSteps = localStorage.getItem(caseStepsLocalStroageKey);
+    if (storedCaseSteps) {
+      setCaseSteps(JSON.parse(storedCaseSteps));
+    }
+  }, []);
+
+  // persist data to local storage upon change
+  useEffect(() => {
+    if (!caseFormData) return;
+    localStorage.setItem(
+      caseFormDataLocalStroageKey,
+      JSON.stringify(caseFormData),
+    );
+  }, [caseFormData]);
+
+  useEffect(() => {
+    if (!caseSteps) return;
+    localStorage.setItem(caseStepsLocalStroageKey, JSON.stringify(caseSteps));
+  }, [caseSteps]);
 
   return (
     <>
@@ -45,19 +85,28 @@ export default function CaseEdit() {
           />
           <Button
             variant="default"
-            className="absolute right-12 top-32"
+            className="absolute right-12 top-32 z-10"
             onClick={() => handleSave()}
           >
             Save
           </Button>
         </div>
         <Separator />
-        <CaseMetadataForm
-          initialData={CaseMetadataFormInitialData}
-          onFormDataChange={setCaseFormData}
-        />
-        <Separator />
-        <KanbanBoard />
+        <Suspense fallback={<div>Loading...</div>}>
+          {caseFormData && (
+            <CaseMetadataForm
+              initialData={caseFormData}
+              onFormDataChange={setCaseFormData}
+            />
+          )}
+          <Separator />
+          {caseSteps && (
+            <CaseStepEditor
+              initialSteps={caseSteps}
+              onStepsChange={setCaseSteps}
+            />
+          )}
+        </Suspense>
       </div>
     </>
   );
