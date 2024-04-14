@@ -13,11 +13,6 @@ export interface AgentsResponse {
     allow_model_choice: boolean;
     model?: string;
     updated_at: string;
-    system_prompt: {
-        [key: number]: {
-          [key: string]: string;
-        };
-      };
   }>;
   total: number;
 }

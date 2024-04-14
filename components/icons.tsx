@@ -25,7 +25,7 @@ import {
   SunMedium,
   Trash,
   User,
-  User2Icon,
+  Search,
   UserX2Icon,
   X,
   AlignStartVertical,
@@ -112,4 +112,5 @@ export const Icons = {
   interviews: BotMessageSquare,
   feedback: AlignStartVertical,
   check: Check,
+  search: Search,
 };
