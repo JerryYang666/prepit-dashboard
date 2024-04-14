@@ -14,7 +14,7 @@ const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
   { title: "Edit", link: "/dashboard/casebook/edit" },
 ];
-export default function page() {
+export default function CaseEdit() {
   const [caseFormData, setCaseFormData] = useState({});
   const pathname = usePathname();
   const currentMode =
