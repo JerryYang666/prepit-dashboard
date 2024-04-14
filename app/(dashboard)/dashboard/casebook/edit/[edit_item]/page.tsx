@@ -15,6 +15,17 @@ import {
   deleteAgent,
   getAgentbyID,
 } from "@/app/api/agent/agent";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -132,6 +143,8 @@ export default function CaseEdit() {
         system_prompt: caseSteps,
       }).then(() => {
         toast.success("Case saved successfully");
+        localStorage.removeItem(caseFormDataLocalStorageKey);
+        localStorage.removeItem(caseStepsLocalStorageKey);
         router.push("/dashboard/casebook");
       });
     }
@@ -145,6 +158,34 @@ export default function CaseEdit() {
           title={`${currentMode} Case`}
           description={`Case ${currentMode}`}
         />
+        {currentMode === "Editing" && (
+          <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="text-red-600 mr-24">Delete Case</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the case and all of its data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                if (!pathEnding || !checkUUID(pathEnding)) {
+                  toast.error("No case ID provided");
+                  return;
+                }
+                deleteAgent({ agent_id: pathEnding }).then(() => {
+                  toast.success("Case deleted successfully");
+                  router.push("/dashboard/casebook");
+                });
+              }}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        )}
         <Button
           variant="default"
           className="absolute right-12 top-32 z-10"
