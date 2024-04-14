@@ -129,6 +129,8 @@ export default function CaseEdit() {
         system_prompt: caseSteps,
       }).then(() => {
         toast.success("Case updated successfully");
+        localStorage.removeItem(caseFormDataLocalStorageKey);
+        localStorage.removeItem(caseStepsLocalStorageKey);
         router.push("/dashboard/casebook");
       });
       return;
@@ -179,6 +181,8 @@ export default function CaseEdit() {
                 }
                 deleteAgent({ agent_id: pathEnding }).then(() => {
                   toast.success("Case deleted successfully");
+                  localStorage.removeItem(caseFormDataLocalStorageKey);
+                  localStorage.removeItem(caseStepsLocalStorageKey);
                   router.push("/dashboard/casebook");
                 });
               }}>Continue</AlertDialogAction>
