@@ -65,9 +65,9 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
             name="agent_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Agent Name</FormLabel>
+                <FormLabel>Case Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter agent name" {...field} />
+                  <Input placeholder="Enter case name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,9 +78,9 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
             name="agent_description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Agent Description</FormLabel>
+                <FormLabel>Case Description</FormLabel>
                 <FormControl>
-                  <Input placeholder="Describe the agent" {...field} />
+                  <Input placeholder="Describe the case" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -91,7 +91,7 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
             name="agent_cover"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Agent Cover Image URL</FormLabel>
+                <FormLabel>Case Cover Image URL</FormLabel>
                 <FormControl>
                   <Input
                     type="url"
