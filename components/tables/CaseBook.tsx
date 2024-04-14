@@ -18,20 +18,32 @@ import { Icons } from "@/components/icons";
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 12;
+
+  const fetchAgents = (page: number) => {
+    getAgents({ page, page_size: pageSize, search: searchTerm }).then(
+      (response) => {
+        setAgents(response.agents);
+        // response.total is the total number of agents, calculate the total number of pages
+        setTotalPages(Math.ceil(response.total / pageSize));
+      },
+    );
+  };
 
   useEffect(() => {
-    getAgents({ page: 1, page_size: 10, search: "" }).then((response) => {
-      setAgents(response.agents);
-    });
-  }, []);
+    fetchAgents(currentPage);
+  }, [currentPage]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    getAgents({ page: 1, page_size: 10, search: searchTerm }).then(
-      (response) => {
-        setAgents(response.agents);
-      },
-    );
+    setCurrentPage(1);
+    fetchAgents(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -92,30 +104,30 @@ export default function CaseBook() {
         </div>
       </main>
       <footer className="p-4">
-        <div className="container flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  2
+      <div className="container flex justify-center">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              {currentPage > 1 && (
+                <PaginationPrevious href="#" onClick={() => handlePageChange(currentPage - 1)}/>
+              )}
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink href="#" onClick={() => handlePageChange(index + 1)} isActive={currentPage === index + 1}>
+                  {index + 1}
                 </PaginationLink>
               </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      </footer>
+            ))}
+            <PaginationItem>
+              {currentPage < totalPages && (
+                <PaginationNext href="#" onClick={() => handlePageChange(currentPage + 1)}/>
+              )}
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </footer>
     </div>
   );
 }

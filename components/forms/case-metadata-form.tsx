@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
 import {
   Select,
   SelectContent,
@@ -26,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-// import FileUpload from "@/components/FileUpload";
 import { useToast } from "../ui/use-toast";
 import FileUpload from "../file-upload";
 const ImgSchema = z.object({
@@ -55,14 +53,14 @@ const formSchema = z.object({
   category: z.string().min(1, { message: "Please select a category" }),
 });
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type CaseMetadataFormValues = z.infer<typeof formSchema>;
 
-interface ProductFormProps {
+interface CaseMetadataFormProps {
   initialData: any | null;
   categories: any;
 }
 
-export const ProductForm: React.FC<ProductFormProps> = ({
+export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
   initialData,
   categories,
 }) => {
@@ -87,12 +85,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         category: "",
       };
 
-  const form = useForm<ProductFormValues>({
+  const form = useForm<CaseMetadataFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  const onSubmit = async (data: ProductFormValues) => {
+  const onSubmit = async (data: CaseMetadataFormValues) => {
     try {
       setLoading(true);
       if (initialData) {

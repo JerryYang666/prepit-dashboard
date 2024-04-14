@@ -1,19 +1,33 @@
+"use client";
+
 import BreadCrumb from "@/components/breadcrumb";
 import { KanbanBoard } from "@/components/kanban/kanban-board";
-import { ProductForm } from "@/components/forms/product-form";
+import { CaseMetadataForm } from "@/components/forms/case-metadata-form";
 import NewTaskDialog from "@/components/kanban/new-task-dialog";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const breadcrumbItems = [{ title: "Kanban", link: "/dashboard/kanban" }];
+const breadcrumbItems = [
+  { title: "Case Book", link: "/dashboard/casebook" },
+  { title: "Edit", link: "/dashboard/casebook/edit" },
+];
 export default function page() {
+  const pathname = usePathname();
+  const currentMode =
+    pathname.split("/").pop() === "new" ? "Adding" : "Editing";
+
   return (
     <>
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <BreadCrumb items={breadcrumbItems} />
         <div className="flex items-start justify-between">
-          <Heading title={`Case Editing`} description="Case Editing" />
+          <Heading
+            title={`${currentMode} Case`}
+            description={`Case ${currentMode}`}
+          />
           {/* <NewTaskDialog /> */}
           <Button
             variant="default"
@@ -23,7 +37,7 @@ export default function page() {
             Save
           </Button>
         </div>
-        <ProductForm
+        <CaseMetadataForm
           categories={[
             { _id: "shirts", name: "shirts" },
             { _id: "pants", name: "pants" },
