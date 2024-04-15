@@ -58,8 +58,12 @@ export const CaseStepEditor: React.FC<CaseStepEditorProps> = ({
   };
 
   const deleteStep = (index: number) => {
-    const updatedSteps = { ...steps };
-    delete updatedSteps[index];
+    const updatedSteps = Object.keys(steps)
+        .filter(key => parseInt(key) !== index)
+        .reduce((result, current, i) => {
+            result[i] = steps[parseInt(current)]; // Cast 'current' to number
+            return result;
+        }, {} as { [key: number]: Step });
     setSteps(updatedSteps);
     onStepsChange(updatedSteps);
   };
