@@ -89,6 +89,18 @@ export default function CaseBook() {
                     src={agent.agent_cover}
                   />
                   <button
+                    className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
+                    onClick={() => {
+                      // open practice page in a new tab
+                      window.open(
+                        `https://test-app.prepit.ai/case/${agent.agent_id}`,
+                        "_blank",
+                      );
+                    }}
+                  >
+                    Practice
+                  </button>
+                  <button
                     className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                     onClick={() =>
                       router.push(`/dashboard/casebook/edit/${agent.agent_id}`)
