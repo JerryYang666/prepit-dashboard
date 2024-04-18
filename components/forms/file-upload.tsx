@@ -151,7 +151,7 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
                       onSelect={() => deleteUpload(key)}
                       className="text-red-600"
                     >
-                      Delete Section
+                      Delete Image
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -168,7 +168,7 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="mt-2">+ Add New Picture</Button>
+          <Button className="mt-2">+ Add New Image</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
