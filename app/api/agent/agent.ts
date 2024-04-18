@@ -29,6 +29,7 @@ export interface SingleAgentResponse {
     [key: number]: string;
   };
   updated_at: string;
+  files: {};
 }
 
 export interface NewAgent {
@@ -44,6 +45,7 @@ export interface NewAgent {
       [key: string]: string;
     };
   };
+  files: {};
 }
 
 export interface UpdateAgent {
@@ -60,6 +62,7 @@ export interface UpdateAgent {
       [key: string]: string;
     };
   };
+  files: {};
 }
 
 export interface DeleteAgent {
@@ -76,6 +79,15 @@ export interface GetAgentbyID {
   agent_id: string;
 }
 
+export interface FileUpload {
+  file: File;
+  file_name: string;
+}
+
+export interface FileUploadResponse {
+  file_url: string;
+}
+
 // API paths
 const path = "agents";
 
@@ -85,6 +97,7 @@ const api = {
   updateAgent: path + "/update_agent",
   getAgentbyID: path + "/agent",
   getAgents: path + "/agents",
+  fileUpload: "/upload_file",
 };
 
 // add agent
@@ -128,5 +141,14 @@ export function getAgentbyID(params: GetAgentbyID): Promise<SingleAgentResponse>
   return request({
     url: api.getAgentbyID+"/"+params.agent_id,
     method: "get",
+  });
+}
+
+// file upload
+export function fileUpload(data: FileUpload | FormData): Promise<FileUploadResponse> {
+  return request({
+    url: api.fileUpload,
+    method: "post",
+    data,
   });
 }

@@ -33,6 +33,7 @@ import {
   BotMessageSquare,
   CircleUserRound,
   LogOut,
+  Copy,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -113,4 +114,5 @@ export const Icons = {
   feedback: AlignStartVertical,
   check: Check,
   search: Search,
+  copy: Copy,
 };

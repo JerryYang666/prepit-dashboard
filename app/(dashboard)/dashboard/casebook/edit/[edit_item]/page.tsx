@@ -3,6 +3,7 @@
 import BreadCrumb from "@/components/breadcrumb";
 import { CaseStepEditor } from "@/components/forms/case-step-editor";
 import { CaseMetadataForm } from "@/components/forms/case-metadata-form";
+import { FileUploadForm } from "@/components/forms/file-upload";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
@@ -25,7 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -35,7 +36,10 @@ const breadcrumbItems = [
 export default function CaseEdit() {
   const caseFormDataLocalStorageKey = "prepit-addCase-caseFormData";
   const caseStepsLocalStorageKey = "prepit-addCase-caseSteps";
+  const fileUploadsLocalStorageKey = "prepit-addCase-fileUploads";
   const [loading, setLoading] = useState(true);
+  // State to track if there are unsaved changes
+  const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
@@ -52,6 +56,9 @@ export default function CaseEdit() {
   );
   const [caseSteps, setCaseSteps] = useState(() =>
     loadInitialState(caseStepsLocalStorageKey, {}),
+  );
+  const [fileUploads, setFileUploads] = useState(() =>
+    loadInitialState(fileUploadsLocalStorageKey, {}),
   );
 
   const checkUUID = (uuid: string) => {
@@ -89,6 +96,7 @@ export default function CaseEdit() {
             agent_cover: data.agent_cover,
             creator: data.creator,
           });
+          setFileUploads(data.files);
           formDataLoaded = true;
           stepsDataLoaded = true;
           checkDataLoaded();
@@ -111,9 +119,48 @@ export default function CaseEdit() {
     localStorage.setItem(caseStepsLocalStorageKey, JSON.stringify(caseSteps));
   }, [caseSteps]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      fileUploadsLocalStorageKey,
+      JSON.stringify(fileUploads),
+    );
+  }, [fileUploads]);
+
+  // Set isDirty to true whenever any of the form data changes
+  useEffect(() => {
+    setIsDirty(true);
+  }, [caseFormData, caseSteps, fileUploads]);
+
+  // Effect to handle the beforeunload event
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isDirty) {
+        // Standard for most browsers + IE
+        const message = "You have unsaved changes. Are you sure you want to leave?";
+        event.returnValue = message; // Gecko + IE
+        return message; // Gecko + Webkit, Safari, Chrome etc.
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]); // This effect depends on the isDirty state
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const postSaveCleanup = () => {
+    toast.success("Case saved successfully");
+    setIsDirty(false); // Reset isDirty state after saving
+    localStorage.removeItem(caseFormDataLocalStorageKey);
+    localStorage.removeItem(caseStepsLocalStorageKey);
+    localStorage.removeItem(fileUploadsLocalStorageKey);
+    router.push("/dashboard/casebook");
+  };
 
   const handleSave = () => {
     if (currentMode === "Editing" && pathEnding && checkUUID(pathEnding)) {
@@ -127,11 +174,9 @@ export default function CaseEdit() {
         status: 1,
         allow_model_choice: true,
         system_prompt: caseSteps,
+        files: fileUploads,
       }).then(() => {
-        toast.success("Case updated successfully");
-        localStorage.removeItem(caseFormDataLocalStorageKey);
-        localStorage.removeItem(caseStepsLocalStorageKey);
-        router.push("/dashboard/casebook");
+        postSaveCleanup();
       });
       return;
     } else if (currentMode === "Adding") {
@@ -143,11 +188,9 @@ export default function CaseEdit() {
         status: 1,
         allow_model_choice: true,
         system_prompt: caseSteps,
+        files: fileUploads,
       }).then(() => {
-        toast.success("Case saved successfully");
-        localStorage.removeItem(caseFormDataLocalStorageKey);
-        localStorage.removeItem(caseStepsLocalStorageKey);
-        router.push("/dashboard/casebook");
+        postSaveCleanup();
       });
     }
   };
@@ -162,33 +205,40 @@ export default function CaseEdit() {
         />
         {currentMode === "Editing" && (
           <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" className="text-red-600 mr-24">Delete Case</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the case and all of its data.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                if (!pathEnding || !checkUUID(pathEnding)) {
-                  toast.error("No case ID provided");
-                  return;
-                }
-                deleteAgent({ agent_id: pathEnding }).then(() => {
-                  toast.success("Case deleted successfully");
-                  localStorage.removeItem(caseFormDataLocalStorageKey);
-                  localStorage.removeItem(caseStepsLocalStorageKey);
-                  router.push("/dashboard/casebook");
-                });
-              }}>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="text-red-600 mr-24">
+                Delete Case
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  case and all of its data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    if (!pathEnding || !checkUUID(pathEnding)) {
+                      toast.error("No case ID provided");
+                      return;
+                    }
+                    deleteAgent({ agent_id: pathEnding }).then(() => {
+                      toast.success("Case deleted successfully");
+                      localStorage.removeItem(caseFormDataLocalStorageKey);
+                      localStorage.removeItem(caseStepsLocalStorageKey);
+                      router.push("/dashboard/casebook");
+                    });
+                  }}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
         <Button
           variant="default"
@@ -204,6 +254,8 @@ export default function CaseEdit() {
           initialData={caseFormData}
           onFormDataChange={setCaseFormData}
         />
+        <Separator />
+        <FileUploadForm uploads={fileUploads} setUploads={setFileUploads} />
         <Separator />
         <CaseStepEditor initialSteps={caseSteps} onStepsChange={setCaseSteps} />
       </Suspense>
