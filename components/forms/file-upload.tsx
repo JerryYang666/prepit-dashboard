@@ -161,7 +161,9 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
               <img src={data.url} alt={data.name} />
             </CardContent>
             <CardFooter>
-              <CardDescription>{data.url}</CardDescription>
+              <CardDescription className="overflow-wrap break-all">
+                {data.url}
+              </CardDescription>
             </CardFooter>
           </Card>
         ))}
