@@ -15,12 +15,14 @@ import { Button } from "@/components/ui/button";
 import { getAgents, AgentsResponse } from "@/app/api/agent/agent";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { data: session, status } = useSession()
   const router = useRouter();
   const pageSize = 12;
 
@@ -100,14 +102,16 @@ export default function CaseBook() {
                   >
                     Practice
                   </button>
-                  <button
-                    className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
-                    onClick={() =>
-                      router.push(`/dashboard/casebook/edit/${agent.agent_id}`)
-                    }
-                  >
-                    Edit
-                  </button>
+                  {session?.user?.email === "jasonxiao0514@gmail.com" && (
+                    <button
+                      className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
+                      onClick={() =>
+                        router.push(`/dashboard/casebook/edit/${agent.agent_id}`)
+                      }
+                    >
+                      Edit
+                    </button>
+                  )}
                 </div>
                 <div className="p-4 grid gap-2">
                   <h3 className="text-lg font-semibold leading-none">
