@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useSession } from "next-auth/react";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -44,6 +45,7 @@ export default function CaseEdit() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const currentMode = pathEnding === "new" ? "Adding" : "Editing";
+  const { data: session, status } = useSession();
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -194,6 +196,10 @@ export default function CaseEdit() {
       });
     }
   };
+
+  if (session?.user?.email !== "jasonxiao0514@gmail.com") {
+    return <div>Unauthorized</div>;
+  }
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
