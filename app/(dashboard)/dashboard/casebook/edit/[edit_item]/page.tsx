@@ -218,7 +218,7 @@ export default function CaseEdit() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogTitle>Are you absolutely sure you want to delete?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
                   case and all of its data.
@@ -239,6 +239,7 @@ export default function CaseEdit() {
                       router.push("/dashboard/casebook");
                     });
                   }}
+                  className="bg-red-600 text-white"
                 >
                   Continue
                 </AlertDialogAction>
