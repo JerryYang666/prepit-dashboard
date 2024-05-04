@@ -47,6 +47,10 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploadCount, setUploadCount] = useState(Object.keys(uploads).length);
+  const [confirmUploadButtonText, setConfirmUploadButtonText] =
+    useState("Confirm Upload");
+  const [confirmUploadButtonDisabled, setConfirmUploadButtonDisabled] =
+    useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files ? event.target.files[0] : null;
@@ -74,9 +78,12 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
         {} as { [key: number]: ImageData },
       );
     setUploads(updatedUploads);
+    setUploadCount(Object.keys(updatedUploads).length);
   };
 
   const handleUpload = async () => {
+    setConfirmUploadButtonText("Uploading...");
+    setConfirmUploadButtonDisabled(true);
     if (!file) {
       toast.error("Please select a file to upload.");
       return;
@@ -106,7 +113,7 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
             [uploadCount]: { name: fileName, url: response.file_url },
           };
           setUploads(newUploads);
-          setUploadCount(uploadCount + 1);
+          setUploadCount(Object.keys(newUploads).length);
           setOpen(false);
           setFileName("");
           setFile(null);
@@ -114,6 +121,10 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
         .catch((error) => {
           console.error("Error uploading file:", error);
           toast.error("Error uploading file. Please try again.");
+        })
+        .finally(() => {
+          setConfirmUploadButtonText("Confirm Upload");
+          setConfirmUploadButtonDisabled(false);
         });
     }
   };
@@ -200,8 +211,8 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
             />
           </div>
           <DialogFooter>
-            <Button color="primary" onClick={handleUpload}>
-              Confirm Upload
+            <Button color="primary" onClick={handleUpload} disabled={confirmUploadButtonDisabled}>
+              {confirmUploadButtonText}
             </Button>
           </DialogFooter>
         </DialogContent>
