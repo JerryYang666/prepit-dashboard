@@ -39,7 +39,7 @@ export default function CaseEdit() {
   const caseStepsLocalStorageKey = "prepit-addCase-caseSteps";
   const fileUploadsLocalStorageKey = "prepit-addCase-fileUploads";
   const [loading, setLoading] = useState(true);
-  // State to track if there are unsaved changes
+  // State to track if there are unsaved changes.
   const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
