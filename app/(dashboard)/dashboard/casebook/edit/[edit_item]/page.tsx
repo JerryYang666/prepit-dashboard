@@ -197,7 +197,12 @@ export default function CaseEdit() {
     }
   };
 
-  if (session?.user?.email !== "jasonxiao0514@gmail.com") {
+  const authorizedEmails = [
+    "jasonxiao0514@gmail.com",
+    "jerryyang20141113@gmail.com"
+  ]
+
+  if (!session?.user?.email || !authorizedEmails.includes(session?.user?.email)) {
     return <div>Unauthorized</div>;
   }
 
