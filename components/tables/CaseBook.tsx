@@ -100,7 +100,7 @@ export default function CaseBook() {
                     onClick={() => {
                       // open practice page in a new tab
                       window.open(
-                        `https://test-app.prepit.ai/case/${agent.agent_id}`,
+                        `https://prepit-user-web-git-new-ui-jerryyang666s-projects.vercel.app/case/${agent.agent_id}`,
                         "_blank",
                       );
                     }}
