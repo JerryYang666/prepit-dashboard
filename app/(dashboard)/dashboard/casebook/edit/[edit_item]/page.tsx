@@ -39,7 +39,7 @@ export default function CaseEdit() {
   const caseStepsLocalStorageKey = "prepit-addCase-caseSteps";
   const fileUploadsLocalStorageKey = "prepit-addCase-fileUploads";
   const [loading, setLoading] = useState(true);
-  // State to track if there are unsaved changes
+  // State to track if there are unsaved changes.
   const [isDirty, setIsDirty] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -197,7 +197,12 @@ export default function CaseEdit() {
     }
   };
 
-  if (session?.user?.email !== "jasonxiao0514@gmail.com") {
+  const authorizedEmails = [
+    "jasonxiao0514@gmail.com",
+    "jerryyang20141113@gmail.com"
+  ]
+
+  if (!session?.user?.email || !authorizedEmails.includes(session?.user?.email)) {
     return <div>Unauthorized</div>;
   }
 
