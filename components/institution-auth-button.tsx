@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Modal } from "./ui/modal";
+import { School } from "lucide-react";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
 
 interface Institution {
@@ -11,10 +12,12 @@ interface Institution {
 
 const institutions: Institution[] = [
   {
-    name: "CWRU",
+    name: "Case Western Reserve University",
     action: () => {
-      localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "institution");
       console.log("CWRU login");
+      const currentUrl = window.location.href;
+      const ssoVerifyUrl = "https://api.prepit-ai.com/v1/dev/admin/cwru_sso_callback";
+      window.location.href = `https://login.case.edu/cas/login?service=${ssoVerifyUrl}?came_from=${currentUrl}`;
     },
     logo: "https://case.edu/brand/themes/custom/crew_branding/favicon.ico",
   },
@@ -31,6 +34,7 @@ function InstitutionAuthButton() {
   return (
     <>
       <Button onClick={handleModal} variant={"outline"} className="w-full">
+        <School className="mr-2" />
         Login with Institution
       </Button>
 
@@ -44,7 +48,13 @@ function InstitutionAuthButton() {
           <div className="flex items-center mb-2" key={institution.name}>
             <Button
               key={institution.name}
-              onClick={institution.action}
+              onClick={() => {
+                localStorage.setItem(
+                  lastUsedLoginProviderLocalStorageKey,
+                  "institution",
+                );
+                institution.action();
+              }}
               variant={"secondary"}
             >
               <img
