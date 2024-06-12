@@ -48,8 +48,15 @@ export default function AuthenticationPage() {
       }
 
       const refreshToken = Cookies.get("refresh_token");
-      if (refreshToken) {
+      const isUuid = refreshToken?.match(
+        /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+      );
+      if (refreshToken && isUuid) {
         window.location.href = dashboardPath;
+      } else {
+        // delete the tokens if they exist
+        Cookies.remove("refresh_token", { domain: firstLevelDomain });
+        Cookies.remove("access_token", { domain: firstLevelDomain });
       }
     }
   }, []);
