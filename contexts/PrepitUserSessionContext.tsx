@@ -22,6 +22,7 @@ interface User {
 interface PrepitUserSessionContextProps {
   user: User | null;
   signOut: () => void;
+  refreshUserInfoFromNewAccessToken: () => void;
   firstNameCacheCookieKey: string;
   lastNameCacheCookieKey: string;
   emailCacheCookieKey: string;
@@ -31,6 +32,7 @@ interface PrepitUserSessionContextProps {
 const PrepitUserSessionContext = createContext<PrepitUserSessionContextProps>({
   user: null,
   signOut: () => {},
+  refreshUserInfoFromNewAccessToken: () => {},
   firstNameCacheCookieKey: "",
   lastNameCacheCookieKey: "",
   emailCacheCookieKey: "",
@@ -68,7 +70,6 @@ export const PrepitUserSessionProvider: React.FC<
         const decodedToken = jwt.verify(token, pub_key, {
           algorithms: ["RS256"],
         }) as User;
-        console.log("Decoded JWT:", decodedToken);
         return decodedToken;
       }
       return null;
@@ -85,6 +86,16 @@ export const PrepitUserSessionProvider: React.FC<
     Cookies.set(profileImgUrlCacheCookieKey, user.profile_img_url, {
       expires: 30,
     });
+  }
+
+  function refreshUserInfoFromNewAccessToken() {
+    const accessToken = Cookies.get(accessTokenCookieKey);
+    if (accessToken) {
+      const user = readJWT(accessToken);
+      if (user) {
+        setUser(user);
+      }
+    }
   }
 
   useEffect(() => {
@@ -115,6 +126,7 @@ export const PrepitUserSessionProvider: React.FC<
       value={{
         user,
         signOut,
+        refreshUserInfoFromNewAccessToken,
         firstNameCacheCookieKey,
         lastNameCacheCookieKey,
         emailCacheCookieKey,

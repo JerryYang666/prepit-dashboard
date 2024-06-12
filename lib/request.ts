@@ -44,7 +44,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const apiUrl = `${baseURL}/${apiVersion}/${environment}/${role}`;
-console.log('****', apiUrl);
 
 const instance = axios.create({
   baseURL: apiUrl,
@@ -81,6 +80,7 @@ instance.interceptors.request.use(
           expires: 1 / 48,
           domain: firstLevelDomain,
         });
+        window.dispatchEvent(new Event("accessTokenAutoRefreshed"));
         if (config.headers) {
           config.headers.Authorization = `Bearer access=${new_access_token}`;
         }

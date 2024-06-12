@@ -22,6 +22,7 @@ export function UserNav() {
   const {
     user,
     signOut,
+    refreshUserInfoFromNewAccessToken,
     firstNameCacheCookieKey,
     lastNameCacheCookieKey,
     emailCacheCookieKey,
@@ -44,6 +45,17 @@ export function UserNav() {
       user?.profile_img_url ?? Cookies.get(profileImgUrlCacheCookieKey) ?? "",
     );
     setLoading(false);
+  }, []);
+
+  // register a listener to update user info when the access token changes
+  useEffect(() => {
+    const handleInfoUpdate = () => {
+      refreshUserInfoFromNewAccessToken();
+    };
+    window.addEventListener("accessTokenAutoRefreshed", handleInfoUpdate);
+    return () => {
+      window.removeEventListener("accessTokenAutoRefreshed", handleInfoUpdate);
+    };
   }, []);
 
   if (loading) {
