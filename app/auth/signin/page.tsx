@@ -16,6 +16,7 @@ export default function AuthenticationPage() {
       const access = urlParams.get("access");
       const firstLevelDomain =
         "." + window.location.hostname.split(".").slice(-2).join(".");
+      const dashboardPath = "/dashboard";
 
       // if any of the tokens are a string called "error", remove the tokens
       // and show an error message
@@ -40,12 +41,12 @@ export default function AuthenticationPage() {
         urlParams.delete("refresh");
         urlParams.delete("access");
 
-        router.push('/dashboard');
+        window.location.href = dashboardPath;
       }
 
       const refreshToken = Cookies.get("refresh_token");
       if (refreshToken) {
-        router.push('/dashboard');
+        window.location.href = dashboardPath;
       }
     }
   }, []);
