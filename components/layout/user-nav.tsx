@@ -97,7 +97,7 @@ export function UserNav() {
         <DropdownMenuItem
           onClick={() => {
             signOut();
-            router.push("/");
+            window.location.href = "/";
           }}
         >
           <Icons.logout className="w-4 h-4 mr-2" />
