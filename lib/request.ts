@@ -1,5 +1,6 @@
 // request.ts
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 
 const localBackend =
   process.env.NEXT_PUBLIC_LOCAL_BACKEND?.toUpperCase() === 'TRUE';
@@ -52,14 +53,49 @@ const instance = axios.create({
 
 // Request interceptor
 instance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
-    // add token, cookie, etc here
-    // config.headers.Authorization = `Bearer ${Token}`;
+  async (config: AxiosRequestConfig) => {
+    const access_token = Cookies.get("access_token");
+    const refresh_token = Cookies.get("refresh_token");
+    if (access_token && access_token !== "" && access_token !== "undefined") {
+      // if access token is present, add it to the headers
+      if (config.headers) {
+        config.headers.Authorization = `Bearer access=${access_token}`;
+      }
+      return config as any;
+    } else if (
+      refresh_token &&
+      refresh_token !== "" &&
+      refresh_token !== "undefined"
+    ) {
+      // if access token is not present but refresh token is present, do a token refresh
+      try {
+        const response = await axios.get(`${apiUrl}/generate_access_token`, {
+          headers: {
+            Authorization: `Bearer refresh=${refresh_token}`,
+          },
+        });
+        const new_access_token = response.data.data.access_token;
+        const firstLevelDomain =
+          "." + window.location.hostname.split(".").slice(-2).join(".");
+        Cookies.set("access_token", new_access_token, {
+          expires: 1 / 48,
+          domain: firstLevelDomain,
+        });
+        if (config.headers) {
+          config.headers.Authorization = `Bearer access=${new_access_token}`;
+        }
+        return config as any;
+      } catch (error) {
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        window.location.href = "/auth/signin";
+      }
+    }
     return config as any;
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Response interceptor
