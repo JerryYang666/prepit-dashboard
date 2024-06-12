@@ -17,6 +17,7 @@ export default function AuthenticationPage() {
       const firstLevelDomain =
         "." + window.location.hostname.split(".").slice(-2).join(".");
       const dashboardPath = "/dashboard";
+      const signInPath = "/auth/signin";
 
       if (refresh && access) {
         // if any of the tokens are a string called "error", remove the tokens
@@ -25,6 +26,7 @@ export default function AuthenticationPage() {
           urlParams.delete("refresh");
           urlParams.delete("access");
           toast.error("An error occurred. Please try again.");
+          router.push(signInPath);
           return;
         }
 
