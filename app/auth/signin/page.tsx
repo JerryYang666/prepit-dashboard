@@ -54,12 +54,6 @@ export default function AuthenticationPage() {
     }
   }, []);
 
-  const handleSSOLogin = () => {
-    const currentUrl = window.location.href;
-    const ssoVerifyUrl = "https://ai4edu-api.jerryang.org/v1/prod/user/sso";
-    window.location.href = `https://login.case.edu/cas/login?service=${ssoVerifyUrl}?came_from=${currentUrl}`;
-  };
-
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
@@ -133,10 +127,10 @@ export default function AuthenticationPage() {
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Create an account
+              Sign in or create an account
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your email below to create your account
+              Enter your email below to sign in
             </p>
           </div>
           <UserAuthForm />
