@@ -10,13 +10,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useSearchParams, redirect } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import GithubSignInButton from "../github-auth-button";
-import { useSession } from "next-auth/react";
 import GoogleSignInButton from "../google-auth-button";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
 import { Badge } from "@/components/ui/badge";
@@ -40,17 +37,11 @@ export default function UserAuthForm() {
 
   const onSubmit = async (data: UserFormValue) => {
     localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "email");
-    signIn("credentials", {
-      email: data.email,
-      callbackUrl: callbackUrl ?? "/dashboard",
-    });
+    // signIn("credentials", {
+    //   email: data.email,
+    //   callbackUrl: callbackUrl ?? "/dashboard",
+    // });
   };
-
-  const { data: session } = useSession();
-  if (session) {
-    // Redirect to the dashboard if the user is already authenticated
-    redirect("/dashboard");
-  }
 
   useEffect(() => {
     setLastUsedLoginProvider(
@@ -111,12 +102,12 @@ export default function UserAuthForm() {
           <Badge className="absolute -top-2 -right-2">Last Used</Badge>
         )}
       </div>
-      <div className="relative">
+      {/* <div className="relative">
         <GithubSignInButton />
         {lastUsedLoginProvider === "github" && (
           <Badge className="absolute -top-2 -right-2">Last Used</Badge>
         )}
-      </div>
+      </div> */}
     </>
   );
 }

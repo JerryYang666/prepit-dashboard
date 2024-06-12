@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Button } from "./ui/button";
 import { Icons } from "./icons";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
@@ -17,7 +16,6 @@ export default function GithubSignInButton() {
       type="button"
       onClick={() => {
         localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "github");
-        signIn("github", { callbackUrl: callbackUrl ?? "/dashboard" });
       }}
     >
       <Icons.gitHub className="mr-2 h-4 w-4" />

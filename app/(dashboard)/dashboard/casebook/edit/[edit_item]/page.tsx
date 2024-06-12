@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useSession } from "next-auth/react";
+import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -45,7 +45,7 @@ export default function CaseEdit() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const currentMode = pathEnding === "new" ? "Adding" : "Editing";
-  const { data: session, status } = useSession();
+  const { user } = usePrepitUserSession();
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -202,7 +202,7 @@ export default function CaseEdit() {
     "jerryyang20141113@gmail.com"
   ]
 
-  if (!session?.user?.email || !authorizedEmails.includes(session?.user?.email)) {
+  if (!user?.email || !authorizedEmails.includes(user?.email)) {
     return <div>Unauthorized</div>;
   }
 
