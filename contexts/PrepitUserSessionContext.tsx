@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
 
@@ -41,7 +47,10 @@ interface PrepitUserSessionProviderProps {
 export const PrepitUserSessionProvider: React.FC<
   PrepitUserSessionProviderProps
 > = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  // initialize user state with return value of readJWT
+  const [user, setUser] = useState<User | null>(
+    readJWT(Cookies.get("access_token")),
+  );
   const accessTokenCookieKey = "access_token";
   const refreshTokenCookieKey = "refresh_token";
   const firstNameCacheCookieKey = "first_name";
@@ -49,39 +58,42 @@ export const PrepitUserSessionProvider: React.FC<
   const emailCacheCookieKey = "email";
   const profileImgUrlCacheCookieKey = "profile_img_url";
 
-  useEffect(() => {
-    const readJWT = (token: string) => {
-      try {
-        const pub_key = process.env.NEXT_PUBLIC_JWT_PUBLIC_KEY;
-        if (!pub_key) {
-          console.error("JWT_PUBLIC_KEY not found in environment");
-          return;
-        }
+  function readJWT(token: string | undefined): User | null {
+    try {
+      const pub_key = process.env.NEXT_PUBLIC_JWT_PUBLIC_KEY;
+      if (!pub_key) {
+        console.error("JWT_PUBLIC_KEY not found in environment");
+        return null;
+      }
+      if (token) {
         const decodedToken = jwt.verify(token, pub_key) as User;
         console.log("Decoded JWT:", decodedToken);
-        setUser(decodedToken);
-        // cache key information into cookies for 30 days
-        Cookies.set(firstNameCacheCookieKey, decodedToken.first_name, {
-          expires: 30,
-        });
-        Cookies.set(lastNameCacheCookieKey, decodedToken.last_name, {
-          expires: 30,
-        });
-        Cookies.set(emailCacheCookieKey, decodedToken.email, {
-          expires: 30,
-        });
-        Cookies.set(profileImgUrlCacheCookieKey, decodedToken.profile_img_url, {
-          expires: 30,
-        });
-      } catch (error) {
-        console.error("Invalid JWT:", error);
-        setUser(null);
+        return decodedToken;
       }
-    };
+      return null;
+    } catch (error) {
+      console.error("Invalid JWT:", error);
+    }
+    return null;
+  }
 
+  function cacheUserInformation(user: User) {
+    Cookies.set(firstNameCacheCookieKey, user.first_name, { expires: 30 });
+    Cookies.set(lastNameCacheCookieKey, user.last_name, { expires: 30 });
+    Cookies.set(emailCacheCookieKey, user.email, { expires: 30 });
+    Cookies.set(profileImgUrlCacheCookieKey, user.profile_img_url, {
+      expires: 30,
+    });
+  }
+
+  useEffect(() => {
     const accessToken = Cookies.get(accessTokenCookieKey);
     if (accessToken) {
-      readJWT(accessToken);
+      const user = readJWT(accessToken);
+      if (user) {
+        setUser(user);
+        cacheUserInformation(user);
+      }
     }
   }, []);
 
