@@ -1,7 +1,6 @@
 "use client";
 import React, {
   createContext,
-  use,
   useContext,
   useEffect,
   useState,
@@ -66,7 +65,9 @@ export const PrepitUserSessionProvider: React.FC<
         return null;
       }
       if (token) {
-        const decodedToken = jwt.verify(token, pub_key) as User;
+        const decodedToken = jwt.verify(token, pub_key, {
+          algorithms: ["RS256"],
+        }) as User;
         console.log("Decoded JWT:", decodedToken);
         return decodedToken;
       }

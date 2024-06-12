@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleSignInButton from "../google-auth-button";
+import InstitutionAuthButton from "../institution-auth-button";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
 import { Badge } from "@/components/ui/badge";
 
@@ -99,6 +100,12 @@ export default function UserAuthForm() {
       <div className="relative">
         <GoogleSignInButton />
         {lastUsedLoginProvider === "google" && (
+          <Badge className="absolute -top-2 -right-2">Last Used</Badge>
+        )}
+      </div>
+      <div className="relative">
+        <InstitutionAuthButton />
+        {lastUsedLoginProvider === "institution" && (
           <Badge className="absolute -top-2 -right-2">Last Used</Badge>
         )}
       </div>
