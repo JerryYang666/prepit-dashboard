@@ -4,6 +4,7 @@ import UserAuthForm from "@/components/forms/user-auth-form";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function AuthenticationPage() {
   const router  = useRouter();
@@ -15,6 +16,14 @@ export default function AuthenticationPage() {
       const access = urlParams.get("access");
       const firstLevelDomain =
         "." + window.location.hostname.split(".").slice(-2).join(".");
+
+      // if any of the tokens are a string called "error", remove the tokens
+      // and show an error message
+      if (refresh === "error" || access === "error") {
+        urlParams.delete("refresh");
+        urlParams.delete("access");
+        toast.error("An error occurred. Please try again.");
+      }
 
       if (refresh && access) {
         // refresh token valid for 15 days, under the domain first level domain

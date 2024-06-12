@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
@@ -17,7 +16,6 @@ export default async function RootLayout({
 }) {
   return (
     <Suspense>
-      <Toaster />
       {children}
     </Suspense>
   );
