@@ -99,8 +99,10 @@ export const PrepitUserSessionProvider: React.FC<
 
   const signOut = () => {
     setUser(null);
-    Cookies.remove(accessTokenCookieKey);
-    Cookies.remove(refreshTokenCookieKey);
+    const firstLevelDomain =
+        "." + window.location.hostname.split(".").slice(-2).join(".");
+    Cookies.remove(accessTokenCookieKey, { domain: firstLevelDomain });
+    Cookies.remove(refreshTokenCookieKey, { domain: firstLevelDomain });
     Cookies.remove(firstNameCacheCookieKey);
     Cookies.remove(lastNameCacheCookieKey);
     Cookies.remove(emailCacheCookieKey);
