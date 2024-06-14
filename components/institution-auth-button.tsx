@@ -16,7 +16,7 @@ const institutions: Institution[] = [
     action: () => {
       console.log("CWRU login");
       const currentUrl = window.location.href;
-      const ssoVerifyUrl = "https://api.prepit-ai.com/v1/dev/admin/cwru_sso_callback";
+      const ssoVerifyUrl = "https://api.prepit-ai.com/v1/prod/admin/cwru_sso_callback";
       window.location.href = `https://login.case.edu/cas/login?service=${ssoVerifyUrl}?came_from=${currentUrl}`;
     },
     logo: "https://case.edu/brand/themes/custom/crew_branding/favicon.ico",
