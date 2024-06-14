@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useSession } from "next-auth/react";
+import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 const breadcrumbItems = [
   { title: "Case Book", link: "/dashboard/casebook" },
@@ -45,7 +45,7 @@ export default function CaseEdit() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const currentMode = pathEnding === "new" ? "Adding" : "Editing";
-  const { data: session, status } = useSession();
+  const { user } = usePrepitUserSession();
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -138,7 +138,8 @@ export default function CaseEdit() {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (isDirty) {
         // Standard for most browsers + IE
-        const message = "You have unsaved changes. Are you sure you want to leave?";
+        const message =
+          "You have unsaved changes. Are you sure you want to leave?";
         event.returnValue = message; // Gecko + IE
         return message; // Gecko + Webkit, Safari, Chrome etc.
       }
@@ -197,12 +198,7 @@ export default function CaseEdit() {
     }
   };
 
-  const authorizedEmails = [
-    "jasonxiao0514@gmail.com",
-    "jerryyang20141113@gmail.com"
-  ]
-
-  if (!session?.user?.email || !authorizedEmails.includes(session?.user?.email)) {
+  if (!user || !user.system_admin) {
     return <div>Unauthorized</div>;
   }
 
@@ -223,7 +219,9 @@ export default function CaseEdit() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure you want to delete?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  Are you absolutely sure you want to delete?
+                </AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
                   case and all of its data.

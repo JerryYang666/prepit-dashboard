@@ -43,9 +43,10 @@
     "date-fns": "^2.30.0",
     "eslint": "^8.48.0",
     "eslint-config-next": "^14.1.4",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^8.5.1",
     "lucide-react": "^0.365.0",
-    "next": "^14.1.4",
-    "next-auth": "^4.24.7",
+    "next": "^14.2.3",
     "next-themes": "^0.2.1",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
@@ -64,6 +65,8 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "prettier": "3.2.5"

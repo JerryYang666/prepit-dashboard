@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { Button } from "./ui/button";
 import { Icons } from "./icons";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
+import { getGoogleSignInUrl } from "@/app/api/auth/auth";
 
 export default function GoogleSignInButton() {
   const searchParams = useSearchParams();
@@ -17,10 +17,14 @@ export default function GoogleSignInButton() {
       type="button"
       onClick={() => {
         localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "google");
-        signIn("google", { callbackUrl: callbackUrl ?? "/dashboard" });
+        const currentUrl = window.location.href;
+        getGoogleSignInUrl(currentUrl).then((response) => {
+          // Redirect to the Google sign-in page
+          window.location.href = response.url;
+        });
       }}
     >
-      <Icons.google className="mr-2 h-4 w-4" />
+      <Icons.google className="mr-2 h-5 w-5" />
       Continue with Google
     </Button>
   );
