@@ -150,7 +150,8 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
                       {userWorkspaces.map(
                         ([workspace, role]) =>
                           // only show workspaces where the user is a "teacher"
-                          role === "teacher" && (
+                          // if user is a "system_admin", bypass the above check and show all workspaces
+                          (role === "teacher" || user?.system_admin) && (
                             <SelectItem key={workspace} value={workspace}>
                               {workspace}
                             </SelectItem>
