@@ -14,7 +14,9 @@ interface User {
   first_name: string;
   last_name: string;
   system_admin: boolean;
-  workspace_roles: {};
+  workspace_role: {
+    [key: string]: string;
+  };
   student_id: string;
   profile_img_url: string;
 }
