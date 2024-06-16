@@ -201,7 +201,16 @@ export default function CaseEdit() {
     }
   };
 
-  if (!user || !user.system_admin) {
+  // the user need to satisfy one of the following conditions to access this page
+  // 1. the user is a system admin
+  // 2. the user is teacher in at least one workspace
+
+  const userWorkspaceRoles = user && Object.values(user?.workspace_role);
+
+  if (
+    !user ||
+    !(user.system_admin || userWorkspaceRoles?.includes("teacher"))
+  ) {
     return <div>Unauthorized</div>;
   }
 
