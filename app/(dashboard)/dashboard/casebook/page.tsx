@@ -1,13 +1,7 @@
 import BreadCrumb from "@/components/breadcrumb";
-import { columns } from "@/components/tables/employee-tables/columns";
 import CaseBook from "@/components/tables/CaseBook";
-import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Employee } from "@/constants/data";
-import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 
 const breadcrumbItems = [{ title: "Case Book", link: "/dashboard/casebook" }];
 
@@ -24,14 +18,7 @@ export default async function page({ searchParams }: paramsProps) {
         <BreadCrumb items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">
-          <Heading title={`Case Book`} description="Manage your cases" />
-
-          <Link
-            href={"/dashboard/casebook/edit/new"}
-            className={cn(buttonVariants({ variant: "default" }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
+          <Heading title={`Case Books`} description="Manage your cases" />
         </div>
         <Separator />
 

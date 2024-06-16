@@ -12,13 +12,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { use, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect } from "react";
+import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 const formSchema = z.object({
   agent_name: z.string().max(255, "Agent name must be at most 255 characters"),
   agent_description: z.string(),
   agent_cover: z.string().url("Must be a valid URL"),
   creator: z.string(),
+  workspace_id: z
+    .string({
+      required_error: "Please select a casebook",
+    })
+    .min(1, "Please select which casebook this case belongs to"),
 });
 
 type CaseMetadataFormValues = z.infer<typeof formSchema>;
@@ -37,7 +50,10 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
     agent_description: "",
     agent_cover: "",
     creator: "",
+    workspace_id: "",
   };
+  const { user } = usePrepitUserSession();
+  const userWorkspaces = Object.entries(user?.workspace_role || {});
 
   const form = useForm<CaseMetadataFormValues>({
     resolver: zodResolver(formSchema),
@@ -111,6 +127,38 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
                 <FormLabel>Creator</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter creator's name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="workspace_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Casebook</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a casebook" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {userWorkspaces.map(
+                        ([workspace, role]) =>
+                          // only show workspaces where the user is a "teacher"
+                          // if user is a "system_admin", bypass the above check and show all workspaces
+                          (role === "teacher" || user?.system_admin) && (
+                            <SelectItem key={workspace} value={workspace}>
+                              {workspace}
+                            </SelectItem>
+                          ),
+                      )}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

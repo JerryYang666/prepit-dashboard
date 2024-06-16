@@ -1,9 +1,10 @@
 // request.ts
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const localBackend =
-  process.env.NEXT_PUBLIC_LOCAL_BACKEND?.toUpperCase() === 'TRUE';
+  process.env.NEXT_PUBLIC_LOCAL_BACKEND?.toUpperCase() === "TRUE";
 
 // default values of the environment variables
 const apiVersion = process.env.NEXT_PUBLIC_API_VERSION;
@@ -11,7 +12,7 @@ const role = process.env.NEXT_PUBLIC_ROLE;
 let baseURL = process.env.NEXT_PUBLIC_ONLINE_BASE_URL;
 let environment = process.env.NEXT_PUBLIC_DEV_ENVIRONMENT;
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   /*
   running in 'next dev' mode
   if the local backend is set to true, use the local backend.
@@ -22,7 +23,7 @@ if (process.env.NODE_ENV === 'development') {
     ? process.env.NEXT_PUBLIC_LOCAL_BASE_URL
     : process.env.NEXT_PUBLIC_ONLINE_BASE_URL;
   environment = process.env.NEXT_PUBLIC_DEV_ENVIRONMENT;
-} else if (process.env.NODE_ENV === 'production') {
+} else if (process.env.NODE_ENV === "production") {
   /*
   running in 'next build' mode
   there are two possible environments: preview and production
@@ -32,7 +33,7 @@ if (process.env.NODE_ENV === 'development') {
   */
   baseURL = process.env.NEXT_PUBLIC_ONLINE_BASE_URL;
   environment =
-    process.env.NEXT_PUBLIC_CURRENT_ENV === 'production'
+    process.env.NEXT_PUBLIC_CURRENT_ENV === "production"
       ? process.env.NEXT_PUBLIC_PROD_ENVIRONMENT
       : process.env.NEXT_PUBLIC_DEV_ENVIRONMENT;
 } else {
@@ -40,7 +41,7 @@ if (process.env.NODE_ENV === 'development') {
   fail safe: all variables are set to default values
   the default is the online development backend
   */
-  console.log('Unknown environment');
+  console.log("Unknown environment");
 }
 
 const apiUrl = `${baseURL}/${apiVersion}/${environment}/${role}`;
@@ -95,7 +96,7 @@ instance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor
@@ -104,10 +105,24 @@ instance.interceptors.response.use(
     if (response.status === 200) {
       return response.data.data;
     } else {
+      toast.error("An error occurred. Please try again later.");
       return Promise.reject(response);
     }
   },
   (error) => {
+    if (error.response?.status === 422) {
+      toast.error(
+        "Missing required data. Please check the fields. Make sure you select a casebook for the case.",
+      );
+    } else {
+      if (error.response.data.detail) {
+        toast.error("An error occurred: " + error.response.data.detail);
+      } else if (error.response.data.message) {
+        toast.error("An error occurred: " + error.response.data.message);
+      } else {
+        toast.error("An error occurred");
+      }
+    }
     return Promise.reject(error);
   },
 );

@@ -45,7 +45,7 @@ export default function CaseEdit() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const currentMode = pathEnding === "new" ? "Adding" : "Editing";
-  const { user } = usePrepitUserSession();
+  const { user, userCanManageWorkspace } = usePrepitUserSession();
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -97,6 +97,7 @@ export default function CaseEdit() {
             agent_description: data.agent_description,
             agent_cover: data.agent_cover,
             creator: data.creator,
+            workspace_id: data.workspace_id,
           });
           setFileUploads(data.files);
           formDataLoaded = true;
@@ -178,6 +179,7 @@ export default function CaseEdit() {
         allow_model_choice: true,
         system_prompt: caseSteps,
         files: fileUploads,
+        workspace_id: caseFormData.workspace_id,
       }).then(() => {
         postSaveCleanup();
       });
@@ -192,13 +194,14 @@ export default function CaseEdit() {
         allow_model_choice: true,
         system_prompt: caseSteps,
         files: fileUploads,
+        workspace_id: caseFormData.workspace_id,
       }).then(() => {
         postSaveCleanup();
       });
     }
   };
 
-  if (!user || !user.system_admin) {
+  if (!userCanManageWorkspace) {
     return <div>Unauthorized</div>;
   }
 

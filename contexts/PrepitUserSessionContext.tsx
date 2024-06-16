@@ -1,10 +1,5 @@
 "use client";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import Cookies from "js-cookie";
 
@@ -14,13 +9,16 @@ interface User {
   first_name: string;
   last_name: string;
   system_admin: boolean;
-  workspace_roles: {};
+  workspace_role: {
+    [key: string]: string;
+  };
   student_id: string;
   profile_img_url: string;
 }
 
 interface PrepitUserSessionContextProps {
   user: User | null;
+  userCanManageWorkspace: boolean;
   signOut: () => void;
   refreshUserInfoFromNewAccessToken: () => void;
   firstNameCacheCookieKey: string;
@@ -31,6 +29,7 @@ interface PrepitUserSessionContextProps {
 
 const PrepitUserSessionContext = createContext<PrepitUserSessionContextProps>({
   user: null,
+  userCanManageWorkspace: false,
   signOut: () => {},
   refreshUserInfoFromNewAccessToken: () => {},
   firstNameCacheCookieKey: "",
@@ -52,6 +51,7 @@ export const PrepitUserSessionProvider: React.FC<
   const [user, setUser] = useState<User | null>(
     readJWT(Cookies.get("access_token")),
   );
+  const [userCanManageWorkspace, setUserCanManageWorkspace] = useState(false);
   const accessTokenCookieKey = "access_token";
   const refreshTokenCookieKey = "refresh_token";
   const firstNameCacheCookieKey = "first_name";
@@ -109,10 +109,25 @@ export const PrepitUserSessionProvider: React.FC<
     }
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const userWorkspaceRoles = user && Object.values(user.workspace_role);
+      // the user need to satisfy one of the following conditions to access this page
+      // 1. the user is a system admin
+      // 2. the user is teacher in at least one workspace
+      if (
+        user &&
+        (user.system_admin || userWorkspaceRoles.includes("teacher"))
+      ) {
+        setUserCanManageWorkspace(true);
+      }
+    }
+  }, [user]);
+
   const signOut = () => {
     setUser(null);
     const firstLevelDomain =
-        "." + window.location.hostname.split(".").slice(-2).join(".");
+      "." + window.location.hostname.split(".").slice(-2).join(".");
     Cookies.remove(accessTokenCookieKey, { domain: firstLevelDomain });
     Cookies.remove(refreshTokenCookieKey, { domain: firstLevelDomain });
     Cookies.remove(firstNameCacheCookieKey);
@@ -125,6 +140,7 @@ export const PrepitUserSessionProvider: React.FC<
     <PrepitUserSessionContext.Provider
       value={{
         user,
+        userCanManageWorkspace,
         signOut,
         refreshUserInfoFromNewAccessToken,
         firstNameCacheCookieKey,
