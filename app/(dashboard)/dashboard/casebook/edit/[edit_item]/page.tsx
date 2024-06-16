@@ -45,7 +45,7 @@ export default function CaseEdit() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const currentMode = pathEnding === "new" ? "Adding" : "Editing";
-  const { user } = usePrepitUserSession();
+  const { user, userCanManageWorkspace } = usePrepitUserSession();
 
   const loadInitialState = (key: string, defaultValue: any) => {
     if (typeof window === "undefined") return defaultValue;
@@ -201,16 +201,7 @@ export default function CaseEdit() {
     }
   };
 
-  // the user need to satisfy one of the following conditions to access this page
-  // 1. the user is a system admin
-  // 2. the user is teacher in at least one workspace
-
-  const userWorkspaceRoles = user && Object.values(user?.workspace_role);
-
-  if (
-    !user ||
-    !(user.system_admin || userWorkspaceRoles?.includes("teacher"))
-  ) {
+  if (!userCanManageWorkspace) {
     return <div>Unauthorized</div>;
   }
 

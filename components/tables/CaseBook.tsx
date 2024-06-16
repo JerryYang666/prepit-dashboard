@@ -35,7 +35,7 @@ export default function CaseBook() {
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { user } = usePrepitUserSession();
+  const { user, userCanManageWorkspace } = usePrepitUserSession();
   const router = useRouter();
   const pageSize = 12;
 
@@ -82,6 +82,21 @@ export default function CaseBook() {
     <div className="flex flex-col min-h-screen">
       <header className="p-4">
         <div className="flex flex-row gap-2 items-center">
+          <span className="text-sm font-semibold hidden sm:block">
+            CaseBook:
+          </span>
+          <Select onValueChange={handleWorkspaceChange} defaultValue="all">
+            <SelectTrigger className="w-1/3 mr-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {workspaces.map((workspace) => (
+                <SelectItem key={workspace} value={workspace}>
+                  {workspace}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="w-1/2 max-w-lg justify-self-start">
             <form
               onSubmit={handleSearch}
@@ -105,23 +120,14 @@ export default function CaseBook() {
               </Button>
             </form>
           </div>
-          <span className="text-sm font-semibold hidden sm:block">CaseBook:</span>
-          <Select onValueChange={handleWorkspaceChange} defaultValue="all">
-            <SelectTrigger className="w-1/3 mr-4">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {workspaces.map((workspace) => (
-                <SelectItem key={workspace} value={workspace}>{workspace}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Link
-            href={"/dashboard/casebook/edit/new"}
-            className={cn(buttonVariants({ variant: "default" }))}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Create
-          </Link>
+          {userCanManageWorkspace && (
+            <Link
+              href={"/dashboard/casebook/edit/new"}
+              className={cn(buttonVariants({ variant: "default" }))}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create
+            </Link>
+          )}
         </div>
       </header>
       <main className="flex-1 py-4">
@@ -146,7 +152,8 @@ export default function CaseBook() {
                   >
                     Practice
                   </button>
-                  {(user?.system_admin || user?.workspace_role[agent.workspace_id] === "teacher") && (
+                  {(user?.system_admin ||
+                    user?.workspace_role[agent.workspace_id] === "teacher") && (
                     <button
                       className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                       onClick={() =>
