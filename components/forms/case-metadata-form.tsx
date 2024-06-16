@@ -29,9 +29,9 @@ const formSchema = z.object({
   creator: z.string(),
   workspace_id: z
     .string({
-      required_error: "Please select a workspace",
+      required_error: "Please select a casebook",
     })
-    .min(1, "Please select which workspace this case belongs to"),
+    .min(1, "Please select which casebook this case belongs to"),
 });
 
 type CaseMetadataFormValues = z.infer<typeof formSchema>;
@@ -137,14 +137,14 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
             name="workspace_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Workspace</FormLabel>
+                <FormLabel>Casebook</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a workspace" />
+                      <SelectValue placeholder="Select a casebook" />
                     </SelectTrigger>
                     <SelectContent>
                       {userWorkspaces.map(

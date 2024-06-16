@@ -105,7 +105,7 @@ export default function CaseBook() {
               </Button>
             </form>
           </div>
-          <span className="text-sm font-semibold hidden sm:block">Workspace:</span>
+          <span className="text-sm font-semibold hidden sm:block">CaseBook:</span>
           <Select onValueChange={handleWorkspaceChange} defaultValue="all">
             <SelectTrigger className="w-1/3 mr-4">
               <SelectValue />

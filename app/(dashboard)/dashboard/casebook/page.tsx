@@ -18,7 +18,7 @@ export default async function page({ searchParams }: paramsProps) {
         <BreadCrumb items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">
-          <Heading title={`Case Book`} description="Manage your cases" />
+          <Heading title={`Case Books`} description="Manage your cases" />
         </div>
         <Separator />
 

@@ -125,7 +125,7 @@ export const navItems: NavItem[] = [
     label: "interviews",
   },
   {
-    title: "Case Book",
+    title: "Case Books",
     href: "/dashboard/casebook",
     icon: "caseBook",
     label: "caseBook",
