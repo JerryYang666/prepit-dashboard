@@ -53,7 +53,7 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
     workspace_id: "",
   };
   const { user } = usePrepitUserSession();
-  const userWorkspaces = Object.keys(user?.workspace_role || {});
+  const userWorkspaces = Object.entries(user?.workspace_role || {});
 
   const form = useForm<CaseMetadataFormValues>({
     resolver: zodResolver(formSchema),
@@ -147,9 +147,15 @@ export const CaseMetadataForm: React.FC<CaseMetadataFormProps> = ({
                       <SelectValue placeholder="Select a workspace" />
                     </SelectTrigger>
                     <SelectContent>
-                      {userWorkspaces.map((workspace) => (
-                        <SelectItem key={workspace} value={workspace}>{workspace}</SelectItem>
-                      ))}
+                      {userWorkspaces.map(
+                        ([workspace, role]) =>
+                          // only show workspaces where the user is a "teacher"
+                          role === "teacher" && (
+                            <SelectItem key={workspace} value={workspace}>
+                              {workspace}
+                            </SelectItem>
+                          ),
+                      )}
                     </SelectContent>
                   </Select>
                 </FormControl>
