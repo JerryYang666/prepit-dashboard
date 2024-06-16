@@ -113,7 +113,7 @@ instance.interceptors.response.use(
     if (error.response?.status === 422) {
       toast.error("Missing required data. Please check the fields. Make sure you select a workspace for the case.");
     } else {
-      toast.error("An error occurred. Please try again later.");
+      toast.error("An error occurred: " + error.response.data.detail);
     }
     return Promise.reject(error);
   },
