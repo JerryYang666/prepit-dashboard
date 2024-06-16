@@ -1,6 +1,7 @@
 // request.ts
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
+import { toast } from "sonner";
 
 const localBackend =
   process.env.NEXT_PUBLIC_LOCAL_BACKEND?.toUpperCase() === 'TRUE';
@@ -104,10 +105,16 @@ instance.interceptors.response.use(
     if (response.status === 200) {
       return response.data.data;
     } else {
+      toast.error("An error occurred. Please try again later.");
       return Promise.reject(response);
     }
   },
   (error) => {
+    if (error.response?.status === 422) {
+      toast.error("Missing required data. Please check the fields. Make sure you select a workspace for the case.");
+    } else {
+      toast.error("An error occurred. Please try again later.");
+    }
     return Promise.reject(error);
   },
 );
