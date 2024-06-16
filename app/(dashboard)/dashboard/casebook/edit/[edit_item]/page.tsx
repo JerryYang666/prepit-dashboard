@@ -97,6 +97,7 @@ export default function CaseEdit() {
             agent_description: data.agent_description,
             agent_cover: data.agent_cover,
             creator: data.creator,
+            workspace_id: data.workspace_id,
           });
           setFileUploads(data.files);
           formDataLoaded = true;
@@ -178,6 +179,7 @@ export default function CaseEdit() {
         allow_model_choice: true,
         system_prompt: caseSteps,
         files: fileUploads,
+        workspace_id: caseFormData.workspace_id,
       }).then(() => {
         postSaveCleanup();
       });
@@ -192,6 +194,7 @@ export default function CaseEdit() {
         allow_model_choice: true,
         system_prompt: caseSteps,
         files: fileUploads,
+        workspace_id: caseFormData.workspace_id,
       }).then(() => {
         postSaveCleanup();
       });

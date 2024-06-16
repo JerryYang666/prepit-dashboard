@@ -11,6 +11,7 @@ export interface AgentsResponse {
     allow_model_choice: boolean;
     model?: string;
     updated_at: string;
+    workspace_id: string;
   }>;
   total: number;
 }
@@ -30,6 +31,7 @@ export interface SingleAgentResponse {
   };
   updated_at: string;
   files: {};
+  workspace_id: string;
 }
 
 export interface NewAgent {
@@ -46,6 +48,7 @@ export interface NewAgent {
     };
   };
   files: {};
+  workspace_id: string;
 }
 
 export interface UpdateAgent {
@@ -63,6 +66,7 @@ export interface UpdateAgent {
     };
   };
   files: {};
+  workspace_id: string;
 }
 
 export interface DeleteAgent {
@@ -72,7 +76,8 @@ export interface DeleteAgent {
 export interface GetAgent {
   page: number;
   page_size: number;
-  search: string;
+  search?: string;
+  workspace_id?: string;
 }
 
 export interface GetAgentbyID {
