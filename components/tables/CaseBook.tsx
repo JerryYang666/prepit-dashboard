@@ -11,14 +11,27 @@ import {
   PaginationContent,
   Pagination,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { getAgents, AgentsResponse } from "@/app/api/agent/agent";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [workspaces, setWorkspaces] = useState<string[]>([]);
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>("all");
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -26,24 +39,39 @@ export default function CaseBook() {
   const router = useRouter();
   const pageSize = 12;
 
-  const fetchAgents = (page: number) => {
-    getAgents({ page, page_size: pageSize, search: searchTerm }).then(
-      (response) => {
-        setAgents(response.agents);
-        // response.total is the total number of agents, calculate the total number of pages
-        setTotalPages(Math.ceil(response.total / pageSize));
-      },
-    );
+  const fetchAgents = (page: number, workspace_id: string = "") => {
+    getAgents({
+      page,
+      page_size: pageSize,
+      search: searchTerm,
+      workspace_id: workspace_id,
+    }).then((response) => {
+      setAgents(response.agents);
+      // response.total is the total number of agents, calculate the total number of pages
+      setTotalPages(Math.ceil(response.total / pageSize));
+    });
   };
 
   useEffect(() => {
     fetchAgents(currentPage);
   }, [currentPage]);
 
+  useEffect(() => {
+    // get all keys in user.workspace_roles, which is a dictionary
+    const userWorkspaces = Object.keys(user?.workspace_role || {});
+    setWorkspaces(["all", ...userWorkspaces]);
+  }, [user]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    fetchAgents(1);
+    fetchAgents(1, selectedWorkspace === "all" ? "" : selectedWorkspace);
+  };
+
+  const handleWorkspaceChange = (workspace: string) => {
+    setSelectedWorkspace(workspace);
+    setCurrentPage(1);
+    fetchAgents(1, workspace === "all" ? "" : workspace);
   };
 
   const handlePageChange = (page: number) => {
@@ -53,14 +81,14 @@ export default function CaseBook() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="p-4">
-        <div className="container grid gap-4 items-center">
-          <div className="w-full max-w-lg justify-self-start">
+        <div className="flex flex-row gap-2 items-center">
+          <div className="w-1/2 max-w-lg justify-self-start">
             <form
               onSubmit={handleSearch}
               className="flex flex-row justify-center items-center gap-2"
             >
               <Input
-                className="w-full border-gray-300"
+                className="w-3/4 border-gray-300"
                 placeholder="Search for case"
                 type="search"
                 value={searchTerm}
@@ -77,11 +105,28 @@ export default function CaseBook() {
               </Button>
             </form>
           </div>
+          <span className="text-sm font-semibold hidden sm:block">Workspace:</span>
+          <Select onValueChange={handleWorkspaceChange} defaultValue="all">
+            <SelectTrigger className="w-1/3 mr-4">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {workspaces.map((workspace) => (
+                <SelectItem value={workspace}>{workspace}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Link
+            href={"/dashboard/casebook/edit/new"}
+            className={cn(buttonVariants({ variant: "default" }))}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Create
+          </Link>
         </div>
       </header>
       <main className="flex-1 py-4">
         <div className="container grid gap-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {agents.map((agent, index) => (
               <Card key={index} className="group">
                 <div className="group aspect-card overflow-hidden rounded-lg h-40 flex items-center relative">
@@ -101,7 +146,7 @@ export default function CaseBook() {
                   >
                     Practice
                   </button>
-                  {user?.system_admin && (
+                  {(user?.system_admin || user?.workspace_role[agent.workspace_id] === "teacher") && (
                     <button
                       className="absolute top-3 right-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                       onClick={() =>
