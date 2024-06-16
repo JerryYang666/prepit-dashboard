@@ -112,7 +112,7 @@ export default function CaseBook() {
             </SelectTrigger>
             <SelectContent>
               {workspaces.map((workspace) => (
-                <SelectItem value={workspace}>{workspace}</SelectItem>
+                <SelectItem key={workspace} value={workspace}>{workspace}</SelectItem>
               ))}
             </SelectContent>
           </Select>
