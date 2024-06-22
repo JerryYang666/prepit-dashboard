@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { getAgents, AgentsResponse } from "@/app/api/agent/agent";
+import { getNewThread } from "@/app/api/thread/thread";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
@@ -76,6 +77,15 @@ export default function CaseBook() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handlePractice = (agent_id: string) => {
+    getNewThread({ agent_id }).then((response) => {
+      window.open(
+        `https://test--app.prepit.ai/loading/${response.thread_id}`,
+        "_blank",
+      );
+    });
   };
 
   return (
@@ -144,10 +154,7 @@ export default function CaseBook() {
                   <button
                     className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                     onClick={() => {
-                      window.open(
-                        `https://test-app.prepit.ai/loading/${agent.agent_id}`,
-                        "_blank",
-                      );
+                      handlePractice(agent.agent_id);
                     }}
                   >
                     Practice
@@ -197,6 +204,7 @@ export default function CaseBook() {
                     href="#"
                     onClick={() => handlePageChange(index + 1)}
                     isActive={currentPage === index + 1}
+                    className={`${currentPage === index + 1 ? "bg-primary text-white" : ""}`}
                   >
                     {index + 1}
                   </PaginationLink>
