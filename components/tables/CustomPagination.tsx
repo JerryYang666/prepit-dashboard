@@ -80,7 +80,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
                   onClick={() => handlePageChange(page)}
                   isActive={currentPage === page}
                   className={
-                    currentPage === page ? "bg-primary text-white" : ""
+                    currentPage === page ? "bg-primary text-white dark:text-black" : ""
                   }
                 >
                   {page}
