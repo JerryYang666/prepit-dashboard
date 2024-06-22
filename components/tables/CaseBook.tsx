@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import {
-  PaginationPrevious,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationContent,
-  Pagination,
-} from "@/components/ui/pagination";
+import CustomPagination from "./CustomPagination";
 import {
   Select,
   SelectContent,
@@ -36,6 +29,7 @@ export default function CaseBook() {
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalAgents, setTotalAgents] = useState(0);
   const { user, userCanManageWorkspace } = usePrepitUserSession();
   const router = useRouter();
   const pageSize = 12;
@@ -50,6 +44,7 @@ export default function CaseBook() {
       setAgents(response.agents);
       // response.total is the total number of agents, calculate the total number of pages
       setTotalPages(Math.ceil(response.total / pageSize));
+      setTotalAgents(response.total);
     });
   };
 
@@ -187,39 +182,13 @@ export default function CaseBook() {
         </div>
       </main>
       <footer className="p-4">
-        <div className="container flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                {currentPage > 1 && (
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                  />
-                )}
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href="#"
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={currentPage === index + 1}
-                    className={`${currentPage === index + 1 ? "bg-primary text-white" : ""}`}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                {currentPage < totalPages && (
-                  <PaginationNext
-                    href="#"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                  />
-                )}
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
+        <div className="text-sm text-gray-500 w-2/3">
+          Showing {agents.length} of {totalAgents} cases
         </div>
       </footer>
     </div>

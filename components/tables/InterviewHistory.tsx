@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import {
-  PaginationPrevious,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationContent,
-  Pagination,
-} from "@/components/ui/pagination";
+import CustomPagination from "./CustomPagination";
 import {
   Select,
   SelectContent,
@@ -32,6 +25,7 @@ export default function InterviewHistory() {
   const [threads, setThreads] = useState<ThreadListItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalThreads, setTotalThreads] = useState(0);
   const { user } = usePrepitUserSession();
   const router = useRouter();
   const pageSize = 10;
@@ -46,6 +40,7 @@ export default function InterviewHistory() {
       setThreads(response.threads);
       // response.total is the total number of agents, calculate the total number of pages
       setTotalPages(Math.ceil(response.total / pageSize));
+      setTotalThreads(response.total);
     });
   };
 
@@ -76,10 +71,7 @@ export default function InterviewHistory() {
   };
 
   const handlePracticeThread = (thread_id: string) => {
-    window.open(
-      `https://test--app.prepit.ai/loading/${thread_id}`,
-      "_blank",
-    );
+    window.open(`https://test--app.prepit.ai/loading/${thread_id}`, "_blank");
   };
 
   return (
@@ -128,46 +120,17 @@ export default function InterviewHistory() {
       </header>
       <main className="flex-1 py-4">
         <div className="container grid gap-8">
-          <DataTable
-            columns={columns}
-            data={threads}
-          />
+          <DataTable columns={columns} data={threads} />
         </div>
       </main>
-      <footer className="pb-20">
-        <div className="container flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                {currentPage > 1 && (
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                  />
-                )}
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href="#"
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={currentPage === index + 1}
-                    className={`${currentPage === index + 1 ? "bg-primary text-white" : ""}`}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                {currentPage < totalPages && (
-                  <PaginationNext
-                    href="#"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                  />
-                )}
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+      <footer className="pb-20 px-10 flex flex-col">
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
+        <div className="text-sm text-gray-500 w-2/3">
+          Showing {threads.length} of {totalThreads} interviews
         </div>
       </footer>
     </div>
