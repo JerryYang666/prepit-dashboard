@@ -2,8 +2,14 @@ import BreadCrumb from "@/components/breadcrumb";
 import CaseBook from "@/components/tables/CaseBook";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import type { Metadata } from "next";
 
 const breadcrumbItems = [{ title: "Case Book", link: "/dashboard/casebook" }];
+
+export const metadata: Metadata = {
+  title: "prepit.ai - Case Books",
+  description: "Access your cases",
+};
 
 type paramsProps = {
   searchParams: {
