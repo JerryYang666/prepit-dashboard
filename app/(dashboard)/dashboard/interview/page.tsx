@@ -1,14 +1,14 @@
 import BreadCrumb from "@/components/breadcrumb";
-import CaseBook from "@/components/tables/CaseBook";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import InterviewHistory from "@/components/tables/InterviewHistory";
 import type { Metadata } from "next";
 
-const breadcrumbItems = [{ title: "Case Book", link: "/dashboard/casebook" }];
+const breadcrumbItems = [{ title: "Interviews", link: "/dashboard/interview" }];
 
 export const metadata: Metadata = {
-  title: "prepit.ai - Case Books",
-  description: "Access your cases",
+  title: "prepit.ai - Interview History",
+  description: "View all the interviews.",
 };
 
 type paramsProps = {
@@ -24,11 +24,14 @@ export default async function page({ searchParams }: paramsProps) {
         <BreadCrumb items={breadcrumbItems} />
 
         <div className="flex items-start justify-between">
-          <Heading title={`Case Books`} description="Manage your cases" />
+          <Heading
+            title={`Interview History`}
+            description="View all the interviews."
+          />
         </div>
         <Separator />
 
-        <CaseBook />
+        <InterviewHistory />
       </div>
     </>
   );

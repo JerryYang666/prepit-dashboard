@@ -120,7 +120,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: "Interviews",
-    href: "/dashboard/user",
+    href: "/dashboard/interview",
     icon: "interviews",
     label: "interviews",
   },

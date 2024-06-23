@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import {
-  PaginationPrevious,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationContent,
-  Pagination,
-} from "@/components/ui/pagination";
+import CustomPagination from "./CustomPagination";
 import {
   Select,
   SelectContent,
@@ -20,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { getAgents, AgentsResponse } from "@/app/api/agent/agent";
+import { getNewThread } from "@/app/api/thread/thread";
 import { Icons } from "@/components/icons";
 import { useRouter } from "next/navigation";
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
@@ -27,6 +21,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { prepitInterviewPageUrl } from "@/constants/constants";
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,6 +30,7 @@ export default function CaseBook() {
   const [agents, setAgents] = useState<AgentsResponse["agents"]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalAgents, setTotalAgents] = useState(0);
   const { user, userCanManageWorkspace } = usePrepitUserSession();
   const router = useRouter();
   const pageSize = 12;
@@ -49,6 +45,7 @@ export default function CaseBook() {
       setAgents(response.agents);
       // response.total is the total number of agents, calculate the total number of pages
       setTotalPages(Math.ceil(response.total / pageSize));
+      setTotalAgents(response.total);
     });
   };
 
@@ -76,6 +73,12 @@ export default function CaseBook() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handlePractice = (agent_id: string) => {
+    getNewThread({ agent_id }).then((response) => {
+      window.open(`${prepitInterviewPageUrl}/${response.thread_id}`, "_blank");
+    });
   };
 
   return (
@@ -144,10 +147,7 @@ export default function CaseBook() {
                   <button
                     className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                     onClick={() => {
-                      window.open(
-                        `https://test-app.prepit.ai/loading/${agent.agent_id}`,
-                        "_blank",
-                      );
+                      handlePractice(agent.agent_id);
                     }}
                   >
                     Practice
@@ -180,38 +180,13 @@ export default function CaseBook() {
         </div>
       </main>
       <footer className="p-4">
-        <div className="container flex justify-center">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                {currentPage > 1 && (
-                  <PaginationPrevious
-                    href="#"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                  />
-                )}
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    href="#"
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={currentPage === index + 1}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                {currentPage < totalPages && (
-                  <PaginationNext
-                    href="#"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                  />
-                )}
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
+        <div className="text-sm text-gray-500 w-2/3">
+          Showing {agents.length} of {totalAgents} cases
         </div>
       </footer>
     </div>
