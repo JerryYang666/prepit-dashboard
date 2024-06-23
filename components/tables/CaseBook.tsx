@@ -21,6 +21,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { prepitInterviewPageUrl } from "@/constants/constants";
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,10 +77,7 @@ export default function CaseBook() {
 
   const handlePractice = (agent_id: string) => {
     getNewThread({ agent_id }).then((response) => {
-      window.open(
-        `https://test-app.prepit.ai/loading/${response.thread_id}`,
-        "_blank",
-      );
+      window.open(`${prepitInterviewPageUrl}/${response.thread_id}`, "_blank");
     });
   };
 

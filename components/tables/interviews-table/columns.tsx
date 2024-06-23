@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { prepitInterviewPageUrl } from "@/constants/constants";
 
 export type InterviewHistory = {
   thread_id: string;
@@ -63,6 +64,12 @@ export const columns: ColumnDef<InterviewHistory>[] = [
       return (
         <div className="flex space-x-2">
           <Button
+            onClick={() => {
+              window.open(
+                `${prepitInterviewPageUrl}/${row.getValue("thread_id")}`,
+                "_blank",
+              );
+            }}
             variant={
               row.getValue("status") === "Finished" ? "outline" : "default"
             }
