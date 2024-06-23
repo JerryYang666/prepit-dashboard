@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import type { Metadata } from "next";
 
-const breadcrumbItems = [{ title: "Case Book", link: "/dashboard/casebook" }];
+const breadcrumbItems = [{ title: "Case Books", link: "/dashboard/casebook" }];
 
 export const metadata: Metadata = {
   title: "prepit.ai - Case Books",
