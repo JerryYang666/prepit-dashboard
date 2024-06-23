@@ -77,7 +77,7 @@ export default function CaseBook() {
   const handlePractice = (agent_id: string) => {
     getNewThread({ agent_id }).then((response) => {
       window.open(
-        `https://test--app.prepit.ai/loading/${response.thread_id}`,
+        `https://test-app.prepit.ai/loading/${response.thread_id}`,
         "_blank",
       );
     });
