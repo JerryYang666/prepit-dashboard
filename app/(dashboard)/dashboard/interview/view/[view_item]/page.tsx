@@ -28,7 +28,7 @@ function ChatMessageComponent({ role, created_at, content }: ChatMessage) {
       : "bg-gray-200 text-black justify-start self-start";
   return (
     <div
-      className={`flex flex-col space-y-1 mr-1 max-w-lg ${role === "human" ? "justify-end" : "justify-start"}`}
+      className={`flex flex-col space-y-1 mr-1 ${role === "human" ? "justify-end" : "justify-start"}`}
     >
       {role === "human" ? (
         <div className="flex items-center space-x-2 justify-end">
@@ -45,7 +45,7 @@ function ChatMessageComponent({ role, created_at, content }: ChatMessage) {
           </span>
         </div>
       )}
-      <div className={`${bubbleClass} rounded-xl p-3`}>
+      <div className={`${bubbleClass} rounded-xl p-3 max-w-xl`}>
         <p>{content}</p>
       </div>
     </div>
@@ -75,7 +75,7 @@ export default function ViewInterview() {
         />
       </div>
       <div className="flex justify-start">
-        <Card className="w-1/2">
+        <Card className="w-full md:w-1/2">
           <CardContent>
             <ScrollArea className="h-[80vh] p-1 w-full pt-3">
               <div className="space-y-3">
