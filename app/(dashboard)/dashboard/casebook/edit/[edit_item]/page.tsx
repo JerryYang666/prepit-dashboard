@@ -30,7 +30,7 @@ import {
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 const breadcrumbItems = [
-  { title: "Case Book", link: "/dashboard/casebook" },
+  { title: "Case Books", link: "/dashboard/casebook" },
   { title: "Edit", link: "/dashboard/casebook/edit" },
 ];
 

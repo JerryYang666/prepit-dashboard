@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { prepitInterviewPageUrl } from "@/constants/constants";
+import Link from "next/link";
 
 export type InterviewHistory = {
   thread_id: string;
@@ -76,13 +77,15 @@ export const columns: ColumnDef<InterviewHistory>[] = [
           >
             {row.getValue("status") === "Finished" ? "Feedback" : "Continue"}
           </Button>
-          <Button
-            variant={
-              row.getValue("status") === "Finished" ? "default" : "outline"
-            }
-          >
-            View
-          </Button>
+          <Link href={`/dashboard/interview/view/${row.getValue("thread_id")}`}>
+            <Button
+              variant={
+                row.getValue("status") === "Finished" ? "default" : "outline"
+              }
+            >
+              View
+            </Button>
+          </Link>
         </div>
       );
     },
