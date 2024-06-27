@@ -63,7 +63,7 @@ export default function ViewInterview() {
       >
         {role === "human" ? (
           <div className="flex items-center space-x-2 justify-end">
-            {!has_audio && (
+            {has_audio && (
               <div
                 className="flex items-center space-x-2 justify-start hover:text-cyan-600 cursor-pointer"
                 onClick={() => playChatMessageAudio(thread_id, msg_id)}
