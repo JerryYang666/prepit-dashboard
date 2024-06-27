@@ -40,6 +40,7 @@ export interface ChatMessage {
   content: string;
   step_id: string;
   trial_id: string;
+  has_audio?: boolean;
 }
 
 interface GetChatHistoryRequest {
