@@ -15,7 +15,6 @@ import { getThreadList, ThreadListItem } from "@/app/api/thread/thread";
 import { columns } from "./interviews-table/columns";
 import { DataTable } from "./interviews-table/interviews-table";
 import { Icons } from "@/components/icons";
-import { useRouter } from "next/navigation";
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 export default function InterviewHistory() {
@@ -27,7 +26,6 @@ export default function InterviewHistory() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalThreads, setTotalThreads] = useState(0);
   const { user } = usePrepitUserSession();
-  const router = useRouter();
   const pageSize = 10;
 
   const fetchThreads = (page: number, workspace_id: string = "") => {
@@ -68,10 +66,6 @@ export default function InterviewHistory() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handlePracticeThread = (thread_id: string) => {
-    window.open(`https://test--app.prepit.ai/loading/${thread_id}`, "_blank");
   };
 
   return (
