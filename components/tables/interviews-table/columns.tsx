@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { prepitInterviewPageUrl } from "@/constants/constants";
+import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 import Link from "next/link";
 
 export type InterviewHistory = {
@@ -12,6 +13,38 @@ export type InterviewHistory = {
   status: "Finished" | "In Progress";
   workspace_id: string;
   last_trial_timestamp: string;
+};
+
+type ContextAwareButtonProps = {
+  workspace_id: string;
+  thread_id: string;
+  status: string;
+};
+
+const ContextAwareButton = ({
+  workspace_id,
+  thread_id,
+  status,
+}: ContextAwareButtonProps) => {
+  const { user } = usePrepitUserSession();
+  return (
+    <Button
+      onClick={() => {
+        const devMode =
+          user?.system_admin ||
+          user?.workspace_role[workspace_id] === "teacher";
+        window.open(
+          `${prepitInterviewPageUrl}/${thread_id}${
+            devMode ? "?devMode=true" : ""
+          }`,
+          "_blank",
+        );
+      }}
+      variant={status === "Finished" ? "outline" : "default"}
+    >
+      {status === "Finished" ? "Feedback" : "Continue"}
+    </Button>
+  );
 };
 
 export const columns: ColumnDef<InterviewHistory>[] = [
@@ -64,19 +97,11 @@ export const columns: ColumnDef<InterviewHistory>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <Button
-            onClick={() => {
-              window.open(
-                `${prepitInterviewPageUrl}/${row.getValue("thread_id")}`,
-                "_blank",
-              );
-            }}
-            variant={
-              row.getValue("status") === "Finished" ? "outline" : "default"
-            }
-          >
-            {row.getValue("status") === "Finished" ? "Feedback" : "Continue"}
-          </Button>
+          <ContextAwareButton
+            workspace_id={row.getValue("workspace_id") as string}
+            thread_id={row.getValue("thread_id") as string}
+            status={row.getValue("status") as string}
+          />
           <Link href={`/dashboard/interview/view/${row.getValue("thread_id")}`}>
             <Button
               variant={
