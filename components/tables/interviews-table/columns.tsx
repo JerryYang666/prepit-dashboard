@@ -18,32 +18,40 @@ export type InterviewHistory = {
 type ContextAwareButtonProps = {
   workspace_id: string;
   thread_id: string;
-  status: string;
+  status: "Finished" | "In Progress";
 };
 
-const ContextAwareButton = ({
+const ContextAwareButtons = ({
   workspace_id,
   thread_id,
   status,
 }: ContextAwareButtonProps) => {
   const { user } = usePrepitUserSession();
+  const devMode =
+    user?.system_admin || user?.workspace_role[workspace_id] === "teacher";
   return (
-    <Button
-      onClick={() => {
-        const devMode =
-          user?.system_admin ||
-          user?.workspace_role[workspace_id] === "teacher";
-        window.open(
-          `${prepitInterviewPageUrl}/${thread_id}${
-            devMode ? "?devMode=true" : ""
-          }`,
-          "_blank",
-        );
-      }}
-      variant={status === "Finished" ? "outline" : "default"}
-    >
-      {status === "Finished" ? "Feedback" : "Continue"}
-    </Button>
+    <>
+      <Button
+        onClick={() => {
+          window.open(
+            `${prepitInterviewPageUrl}/${thread_id}${
+              devMode ? "?devMode=true" : ""
+            }`,
+            "_blank",
+          );
+        }}
+        variant={status === "Finished" ? "outline" : "default"}
+      >
+        {status === "Finished" ? "Feedback" : "Continue"}
+      </Button>
+      <Link
+        href={`/dashboard/interview/view/${thread_id}${devMode ? "?devMode=true" : ""}`}
+      >
+        <Button variant={status === "Finished" ? "default" : "outline"}>
+          View
+        </Button>
+      </Link>
+    </>
   );
 };
 
@@ -97,20 +105,11 @@ export const columns: ColumnDef<InterviewHistory>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <ContextAwareButton
-            workspace_id={row.getValue("workspace_id") as string}
-            thread_id={row.getValue("thread_id") as string}
-            status={row.getValue("status") as string}
+          <ContextAwareButtons
+            workspace_id={row.getValue("workspace_id")}
+            thread_id={row.getValue("thread_id")}
+            status={row.getValue("status")}
           />
-          <Link href={`/dashboard/interview/view/${row.getValue("thread_id")}`}>
-            <Button
-              variant={
-                row.getValue("status") === "Finished" ? "default" : "outline"
-              }
-            >
-              View
-            </Button>
-          </Link>
         </div>
       );
     },
