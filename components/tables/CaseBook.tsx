@@ -22,6 +22,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { prepitInterviewPageUrl } from "@/constants/constants";
+import Image from "next/image";
 
 export default function CaseBook() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -146,10 +147,12 @@ export default function CaseBook() {
             {agents.map((agent, index) => (
               <Card key={index} className="group">
                 <div className="group aspect-card overflow-hidden rounded-lg h-40 flex items-center relative">
-                  <img
+                  <Image
                     alt={agent.agent_name}
                     className="w-full h-full object-cover object-center transform transition duration-300 ease-in-out group-hover:scale-110"
                     src={agent.agent_cover}
+                    width={400}
+                    height={200}
                   />
                   <button
                     className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"

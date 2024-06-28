@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { ChatMessage, getChatHistory } from "@/app/api/thread/thread";
 import { AudioLines } from "lucide-react";
+import Image from "next/image";
 
 const breadcrumbItems = [
   { title: "Interviews", link: "/dashboard/interview" },
@@ -25,6 +26,13 @@ export default function ViewInterview() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [devMode, setDevMode] = useState(false);
+
+  useEffect(() => {
+    const devModeLocal =
+      new URLSearchParams(window.location.search).get("devMode") === "true";
+    setDevMode(devModeLocal);
+  }, []);
 
   useEffect(() => {
     if (!pathEnding) return;
@@ -57,6 +65,17 @@ export default function ViewInterview() {
       role === "human"
         ? "bg-black text-white justify-end self-end"
         : "bg-gray-200 text-black justify-start self-start";
+    // if there's a url enclosed in curly braces, replace it with a Image component
+    const contentImage = content.match(/{(.*?)}/g);
+    let imageUrl = "";
+    if (contentImage) {
+      imageUrl = contentImage[0].replace(/{|}/g, "");
+      if (
+        !imageUrl.startsWith("https://bucket-57h03x.s3.us-east-2.amazonaws.com")
+      ) {
+        imageUrl = "";
+      }
+    }
     return (
       <div
         className={`flex flex-col space-y-1 mr-1 ${role === "human" ? "justify-end" : "justify-start"}`}
@@ -85,7 +104,16 @@ export default function ViewInterview() {
           </div>
         )}
         <div className={`${bubbleClass} rounded-xl p-3 max-w-xl`}>
-          <p>{content}</p>
+          <p>{devMode ? content : content.replace(/\[.*?]|\{.*?}/g, "")}</p>
+          {imageUrl !== "" && (
+            <Image
+              src={imageUrl}
+              alt="exhibit"
+              width={400}
+              height={200}
+              className="rounded-xl"
+            />
+          )}
         </div>
       </div>
     );
