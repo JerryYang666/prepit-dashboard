@@ -75,8 +75,15 @@ export default function CaseBook() {
     setCurrentPage(page);
   };
 
-  const handlePractice = (agent_id: string) => {
+  const handlePractice = (agent_id: string, devMode = false) => {
     getNewThread({ agent_id }).then((response) => {
+      if (devMode) {
+        window.open(
+          `${prepitInterviewPageUrl}/${response.thread_id}?devMode=true`,
+          "_blank",
+        );
+        return;
+      }
       window.open(`${prepitInterviewPageUrl}/${response.thread_id}`, "_blank");
     });
   };
@@ -147,7 +154,10 @@ export default function CaseBook() {
                   <button
                     className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-md shadow-md transition-opacity opacity-70 group-hover:opacity-100"
                     onClick={() => {
-                      handlePractice(agent.agent_id);
+                      const devMode =
+                        user?.system_admin ||
+                        user?.workspace_role[agent.workspace_id] === "teacher";
+                      handlePractice(agent.agent_id, devMode);
                     }}
                   >
                     Practice
