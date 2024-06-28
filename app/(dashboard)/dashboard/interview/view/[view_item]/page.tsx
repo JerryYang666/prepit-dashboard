@@ -111,7 +111,7 @@ export default function ViewInterview() {
               alt="exhibit"
               width={400}
               height={200}
-              className="rounded-xl"
+              className="rounded-xl w-full"
             />
           )}
         </div>
