@@ -27,6 +27,7 @@ import {
 import { AudioLines } from "lucide-react";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import { Separator } from "@/components/ui/separator";
 
 const breadcrumbItems = [
   { title: "Interviews", link: "/dashboard/interview" },
@@ -187,30 +188,33 @@ export default function ViewInterview() {
           title="Your Interview"
           description="View your interview here"
         />
-        <Select
-          onValueChange={handleStepSelectionChange}
-          defaultValue="full interview"
-        >
-          <SelectTrigger className="w-1/3 mr-1">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem key="full interview" value="full interview">
-              Full Interview
-            </SelectItem>
-            {feedbacks.map((feedback) => (
-              <SelectItem
-                key={feedback.step_id}
-                value={feedback.step_id.toString()}
-              >
-                {feedback.step_title || `Step ${feedback.step_id}`}
+        <div className="flex flex-col items-end w-1/2">
+          <p className="mr-1 text-gray-500 text-sm w-1/3 min-w-fit">Show feedback for:</p>
+          <Select
+            onValueChange={handleStepSelectionChange}
+            defaultValue="full interview"
+          >
+            <SelectTrigger className="w-1/3 mr-1 min-w-fit">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem key="full interview" value="full interview">
+                Full Interview
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              {feedbacks.map((feedback) => (
+                <SelectItem
+                  key={feedback.step_id}
+                  value={feedback.step_id.toString()}
+                >
+                  {feedback.step_title || `Step ${feedback.step_id}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-      <div className="flex justify-start">
-        <Card className="w-full md:w-1/2 mr-2">
+      <div className="flex flex-col sm:flex-row justify-start">
+        <Card className="w-full mb-2 sm:w-1/2 sm:mr-2 sm:mb-0">
           <CardContent>
             <ScrollArea className="h-[80vh] p-1 w-full pt-3">
               <div className="space-y-3">
@@ -224,22 +228,25 @@ export default function ViewInterview() {
             </ScrollArea>
           </CardContent>
         </Card>
-        <Card className="w-full md:w-1/2">
+        <Card className="w-full sm:w-1/2">
           <CardContent>
             <ScrollArea className="h-[80vh] p-1 w-full pt-3">
               <div className="space-y-3">
                 {filteredFeedbacks.map((feedback) => (
-                  <div
-                    key={feedback.step_id}
-                    className="flex flex-col space-y-2"
-                  >
-                    <h3 className="text-lg font-semibold">
-                      {feedback.step_title || `Step ${feedback.step_id}`}
-                    </h3>
-                    <ReactMarkdown components={{ h2: CustomH2 }}>
-                      {feedback.feedback}
-                    </ReactMarkdown>
-                  </div>
+                  <>
+                    <div
+                      key={feedback.step_id}
+                      className="flex flex-col space-y-2"
+                    >
+                      <h3 className="text-lg font-semibold">
+                        {feedback.step_title || `Step ${feedback.step_id}`}
+                      </h3>
+                      <ReactMarkdown components={{ h2: CustomH2 }}>
+                        {feedback.feedback}
+                      </ReactMarkdown>
+                    </div>
+                    <Separator />
+                  </>
                 ))}
               </div>
             </ScrollArea>
