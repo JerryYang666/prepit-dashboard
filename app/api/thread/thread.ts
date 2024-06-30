@@ -38,9 +38,17 @@ export interface ChatMessage {
   user_id: string;
   role: "human" | "openai" | "anthropic";
   content: string;
-  step_id: string;
+  step_id: number;
   trial_id: string;
   has_audio?: boolean;
+}
+
+export interface StepFeedback {
+  thread_id: string;
+  step_id: number;
+  step_title: string;
+  agent_id: string;
+  feedback: string;
 }
 
 interface GetChatHistoryRequest {
@@ -50,6 +58,7 @@ interface GetChatHistoryRequest {
 interface GetChatHistoryResponse {
   thread_id: string;
   messages: ChatMessage[];
+  feedback: StepFeedback[];
 }
 
 // API full path: /v1/dev/admin/threads/xxx

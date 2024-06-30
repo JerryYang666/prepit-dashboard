@@ -2,13 +2,31 @@
 
 import BreadCrumb from "@/components/breadcrumb";
 import { Heading } from "@/components/ui/heading";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { usePathname } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useState } from "react";
-import { ChatMessage, getChatHistory } from "@/app/api/thread/thread";
+import {
+  ClassAttributes,
+  HTMLAttributes,
+  JSX,
+  useEffect,
+  useState,
+} from "react";
+import {
+  ChatMessage,
+  StepFeedback,
+  getChatHistory,
+} from "@/app/api/thread/thread";
 import { AudioLines } from "lucide-react";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 const breadcrumbItems = [
   { title: "Interviews", link: "/dashboard/interview" },
@@ -26,6 +44,13 @@ export default function ViewInterview() {
   const pathname = usePathname();
   const pathEnding = pathname.split("/").pop();
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [filteredChatHistory, setFilteredChatHistory] = useState<ChatMessage[]>(
+    [],
+  );
+  const [feedbacks, setFeedbacks] = useState<StepFeedback[]>([]);
+  const [filteredFeedbacks, setFilteredFeedbacks] = useState<StepFeedback[]>(
+    [],
+  );
   const [devMode, setDevMode] = useState(false);
 
   useEffect(() => {
@@ -38,8 +63,37 @@ export default function ViewInterview() {
     if (!pathEnding) return;
     getChatHistory({ thread_id: pathEnding }).then((response) => {
       setChatHistory(response.messages);
+      setFilteredChatHistory(response.messages);
+      setFeedbacks(response.feedback);
+      setFilteredFeedbacks(response.feedback);
     });
   }, []);
+
+  const handleStepSelectionChange = (value: string) => {
+    if (value === "full interview") {
+      setFilteredChatHistory(chatHistory);
+      setFilteredFeedbacks(feedbacks);
+      return;
+    } else {
+      let selectedFeedback = feedbacks.find(
+        (feedback) => feedback.step_id === parseInt(value),
+      );
+      if (!selectedFeedback) {
+        selectedFeedback = {
+          thread_id: "",
+          step_id: 0,
+          step_title: "",
+          agent_id: "",
+          feedback: "No feedback available for this step",
+        };
+      }
+      const selectedChatHistory = chatHistory.filter(
+        (chatMessage) => chatMessage.step_id === parseInt(value),
+      );
+      setFilteredChatHistory(selectedChatHistory);
+      setFilteredFeedbacks([selectedFeedback]);
+    }
+  };
 
   const playChatMessageAudio = (thread_id: string, msg_id: string) => {
     // Replace the # in msg_id with _
@@ -119,6 +173,12 @@ export default function ViewInterview() {
     );
   }
 
+  const CustomH2 = (
+    props: JSX.IntrinsicAttributes &
+      ClassAttributes<HTMLHeadingElement> &
+      HTMLAttributes<HTMLHeadingElement>,
+  ) => <h2 className="font-semibold" {...props} />;
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <BreadCrumb items={breadcrumbItems} />
@@ -127,14 +187,59 @@ export default function ViewInterview() {
           title="Your Interview"
           description="View your interview here"
         />
+        <Select
+          onValueChange={handleStepSelectionChange}
+          defaultValue="full interview"
+        >
+          <SelectTrigger className="w-1/3 mr-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem key="full interview" value="full interview">
+              Full Interview
+            </SelectItem>
+            {feedbacks.map((feedback) => (
+              <SelectItem
+                key={feedback.step_id}
+                value={feedback.step_id.toString()}
+              >
+                {feedback.step_title || `Step ${feedback.step_id}`}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex justify-start">
+        <Card className="w-full md:w-1/2 mr-2">
+          <CardContent>
+            <ScrollArea className="h-[80vh] p-1 w-full pt-3">
+              <div className="space-y-3">
+                {filteredChatHistory.map((chatMessage) => (
+                  <ChatMessageComponent
+                    key={chatMessage.msg_id}
+                    {...chatMessage}
+                  />
+                ))}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
         <Card className="w-full md:w-1/2">
           <CardContent>
             <ScrollArea className="h-[80vh] p-1 w-full pt-3">
               <div className="space-y-3">
-                {chatHistory.map((chat) => (
-                  <ChatMessageComponent key={chat.msg_id} {...chat} />
+                {filteredFeedbacks.map((feedback) => (
+                  <div
+                    key={feedback.step_id}
+                    className="flex flex-col space-y-2"
+                  >
+                    <h3 className="text-lg font-semibold">
+                      {feedback.step_title || `Step ${feedback.step_id}`}
+                    </h3>
+                    <ReactMarkdown components={{ h2: CustomH2 }}>
+                      {feedback.feedback}
+                    </ReactMarkdown>
+                  </div>
                 ))}
               </div>
             </ScrollArea>
