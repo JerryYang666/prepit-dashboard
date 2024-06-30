@@ -186,10 +186,12 @@ export default function ViewInterview() {
       <div className="flex items-start justify-between">
         <Heading
           title="Your Interview"
-          description="View your interview here"
+          description="View your interview and feedback here"
         />
         <div className="flex flex-col items-end w-1/2">
-          <p className="mr-1 text-gray-500 text-sm w-1/3 min-w-fit">Show feedback for:</p>
+          <p className="mr-1 text-gray-500 text-sm w-1/3 min-w-fit">
+            Show feedback for:
+          </p>
           <Select
             onValueChange={handleStepSelectionChange}
             defaultValue="full interview"
@@ -248,6 +250,11 @@ export default function ViewInterview() {
                     <Separator />
                   </>
                 ))}
+                {filteredFeedbacks.length === 0 && (
+                  <div className="flex h-full justify-center items-center">
+                    <p className="text-gray-500">No feedback available</p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </CardContent>
