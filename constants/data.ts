@@ -130,10 +130,10 @@ export const navItems: NavItem[] = [
     icon: "caseBook",
     label: "caseBook",
   },
-  {
-    title: "Feedback",
-    href: "/dashboard/profile",
-    icon: "feedback",
-    label: "feedback",
-  },
+  // {
+  //   title: "Feedback",
+  //   href: "/dashboard/profile",
+  //   icon: "feedback",
+  //   label: "feedback",
+  // },
 ];
