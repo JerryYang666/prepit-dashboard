@@ -190,7 +190,7 @@ export default function ViewInterview() {
         />
         <div className="flex flex-col items-end w-1/2">
           <p className="mr-1 text-gray-500 text-sm w-1/3 min-w-fit">
-            Show feedback for:
+            Show feedback and transcript for:
           </p>
           <Select
             onValueChange={handleStepSelectionChange}
@@ -201,7 +201,7 @@ export default function ViewInterview() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem key="full interview" value="full interview">
-                Full Interview
+                All Sections
               </SelectItem>
               {feedbacks.map((feedback) => (
                 <SelectItem
