@@ -11,6 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Label } from "@/components/ui/label";
 import { Badge } from "../ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,11 +27,13 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { CircleHelp } from "lucide-react";
 
 interface Step {
   title: string;
   instruction: string;
   information: string;
+  answer?: string;
 }
 
 interface Steps {
@@ -59,18 +67,26 @@ export const CaseStepEditor: React.FC<CaseStepEditorProps> = ({
 
   const deleteStep = (index: number) => {
     const updatedSteps = Object.keys(steps)
-        .filter(key => parseInt(key) !== index)
-        .reduce((result, current, i) => {
-            result[i] = steps[parseInt(current)]; // Cast 'current' to number
-            return result;
-        }, {} as { [key: number]: Step });
+      .filter((key) => parseInt(key) !== index)
+      .reduce(
+        (result, current, i) => {
+          result[i] = steps[parseInt(current)]; // Cast 'current' to number
+          return result;
+        },
+        {} as { [key: number]: Step },
+      );
     setSteps(updatedSteps);
     onStepsChange(updatedSteps);
   };
 
   const addNewStep = (title: string) => {
     const newIndex = Object.keys(steps).length;
-    const newStep: Step = { title, instruction: "", information: "" };
+    const newStep: Step = {
+      title,
+      instruction: "",
+      information: "",
+      answer: "",
+    };
     const updatedSteps = { ...steps, [newIndex]: newStep };
     setSteps(updatedSteps);
     onStepsChange(updatedSteps);
@@ -84,12 +100,15 @@ export const CaseStepEditor: React.FC<CaseStepEditorProps> = ({
           <div className="absolute top-0 right-0 p-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size={'sm'} className="ml-1">
+                <Button variant="secondary" size={"sm"} className="ml-1">
                   •••
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => deleteStep(Number(index))} className="text-red-600">
+                <DropdownMenuItem
+                  onSelect={() => deleteStep(Number(index))}
+                  className="text-red-600"
+                >
                   Delete Section
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -102,22 +121,90 @@ export const CaseStepEditor: React.FC<CaseStepEditorProps> = ({
               handleStepChange(Number(index), "title", e.target.value)
             }
           />
-          <Badge className="font-bold w-fit size-8 text-sm" variant={'secondary'}>Instruction</Badge>
-          <Textarea
-            value={step.instruction}
-            onChange={(e) =>
-              handleStepChange(Number(index), "instruction", e.target.value)
-            }
-            className="h-32"
-          />
-          <Badge className="font-bold w-fit size-8 text-sm" variant={'secondary'}>Information</Badge>
-          <Textarea
-            value={step.information}
-            onChange={(e) =>
-              handleStepChange(Number(index), "information", e.target.value)
-            }
-            className="h-32"
-          />
+          <TooltipProvider delayDuration={0} skipDelayDuration={50}>
+            <div className="flex items-center gap-2">
+              <Badge
+                className="font-bold w-fit size-8 text-sm"
+                variant={"secondary"}
+              >
+                Instruction
+              </Badge>
+              <Tooltip>
+                <TooltipTrigger className="w-fit h-fit">
+                  <CircleHelp className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Put instructions for the interviewer AI here.</p>
+                  <p>Organize the instructions into actionable steps.</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <Textarea
+              value={step.instruction}
+              onChange={(e) =>
+                handleStepChange(Number(index), "instruction", e.target.value)
+              }
+              className="h-32"
+            />
+            <div className="flex items-center gap-2">
+              <Badge
+                className="font-bold w-fit size-8 text-sm"
+                variant={"secondary"}
+              >
+                Information
+              </Badge>
+              <Tooltip>
+                <TooltipTrigger className="w-fit h-fit">
+                  <CircleHelp className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Put information about this section here.</p>
+                  <p>Include any context or background information</p>
+                  <p> that the interviewer should know.</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <Textarea
+              value={step.information}
+              onChange={(e) =>
+                handleStepChange(Number(index), "information", e.target.value)
+              }
+              className="h-32"
+            />
+            <div className="flex items-center gap-2">
+              <Badge
+                className="font-bold w-fit size-8 text-sm"
+                variant={"secondary"}
+              >
+                Answer
+              </Badge>
+              <Tooltip>
+                <TooltipTrigger className="w-fit h-fit">
+                  <CircleHelp className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>Put recommended answers here.</p>
+                  <p>
+                    You can also include any additional instruction for the
+                    feedback provider.
+                  </p>
+                  <p className="font-bold">
+                    The content here will NOT be provided during the interview
+                  </p>
+                  <p className="font-bold">
+                    and will ONLY be visible to the feedback provider AI.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <Textarea
+              value={step.answer}
+              onChange={(e) =>
+                handleStepChange(Number(index), "answer", e.target.value)
+              }
+              className="h-32"
+            />
+          </TooltipProvider>
         </Card>
       ))}
       <Dialog>
