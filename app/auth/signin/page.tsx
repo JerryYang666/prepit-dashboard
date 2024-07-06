@@ -131,7 +131,7 @@ export default function AuthenticationPage() {
         </div>
       </div>
       <div className="p-4 lg:p-8 h-full flex items-center">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="relative mx-auto flex w-full h-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
               Sign in or create an account
@@ -141,22 +141,19 @@ export default function AuthenticationPage() {
             </p>
           </div>
           <UserAuthForm />
-          <div className="px-8 text-center text-sm text-muted-foreground">
+          <div className="px-0 text-center text-sm text-muted-foreground absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full">
             By clicking continue, you agree to our{" "}
             <Link
-              href="/terms"
+              href="https://bucket-57h03x.s3.us-east-2.amazonaws.com/static/prepit.ai_privacy_policy_20240706.pdf"
               className="underline underline-offset-4 hover:text-primary"
-            >
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link
-              href="/privacy"
-              className="underline underline-offset-4 hover:text-primary"
+              target="_blank"
             >
               Privacy Policy
             </Link>
             .
+            <br />
+            Prepit.ai is a product of Coursey, LLC.
+            <br />© 2024 Coursey, LLC. All rights reserved.
           </div>
         </div>
       </div>
