@@ -141,10 +141,12 @@ export default function AuthenticationPage() {
               Sign in or create an account
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your email below to sign in
+              Enter your email below to sign in. <br />
+              We'll create an account for you if you don't have one.
             </p>
           </div>
           <UserAuthForm />
+          <div className="h-10"></div>
           <div className="px-0 text-center text-sm text-muted-foreground absolute bottom-1 left-1/2 transform -translate-x-1/2 w-full">
             By clicking continue, you agree to our{" "}
             <Link
