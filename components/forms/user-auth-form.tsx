@@ -1,48 +1,25 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams, redirect } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import GoogleSignInButton from "../google-auth-button";
 import InstitutionAuthButton from "../institution-auth-button";
 import { lastUsedLoginProviderLocalStorageKey } from "@/constants/constants";
 import { Badge } from "@/components/ui/badge";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Enter a valid email address" }),
-});
-
-type UserFormValue = z.infer<typeof formSchema>;
+import EmailDefaultForm from "./email-default-form";
+import EmailOtpForm from "./email-otp-form";
+import EmailOtpNameForm from "./email-otp-name-form";
 
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-  const [loading, setLoading] = useState(false);
   const [lastUsedLoginProvider, setLastUsedLoginProvider] = useState<
     string | null
   >(null);
-  const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const onSubmit = async (data: UserFormValue) => {
-    localStorage.setItem(lastUsedLoginProviderLocalStorageKey, "email");
-    // signIn("credentials", {
-    //   email: data.email,
-    //   callbackUrl: callbackUrl ?? "/dashboard",
-    // });
-  };
+  const [email, setEmail] = useState<string | null>(null);
+  const [emailSignInEventId, setEmailSignInEventId] = useState<string | null>(
+    null,
+  );
+  const [emailSignInState, setEmailSignInState] = useState(0); // 0-> initial, 1-> otp sent and not new account, 2-> otp sent and new account
 
   useEffect(() => {
     setLastUsedLoginProvider(
@@ -52,41 +29,28 @@ export default function UserAuthForm() {
 
   return (
     <>
-      {/* <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 w-full"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      type="email"
-                      placeholder="Enter your email..."
-                      disabled={loading}
-                      {...field}
-                    />
-                    {lastUsedLoginProvider === "email" && (
-                      <Badge className="absolute -top-2 -right-2">
-                        Last Used
-                      </Badge>
-                    )}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continue With Email
-          </Button>
-        </form>
-      </Form> */}
+      {emailSignInState === 0 && (
+        <EmailDefaultForm
+          lastUsedLoginProvider={lastUsedLoginProvider}
+          setEmail={setEmail}
+          setEmailSignInEventId={setEmailSignInEventId}
+          setEmailSignInState={setEmailSignInState}
+        />
+      )}
+      {emailSignInState === 1 && (
+        <EmailOtpForm
+          email={email}
+          event_id={emailSignInEventId}
+          setEmailSignInState={setEmailSignInState}
+        />
+      )}
+      {emailSignInState === 2 && (
+        <EmailOtpNameForm
+          email={email}
+          event_id={emailSignInEventId}
+          setEmailSignInState={setEmailSignInState}
+        />
+      )}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

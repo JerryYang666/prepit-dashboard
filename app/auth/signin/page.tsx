@@ -130,8 +130,8 @@ export default function AuthenticationPage() {
           </blockquote>
         </div>
       </div>
-      <div className="p-4 lg:p-8 h-full flex items-center">
-        <div className="relative mx-auto flex w-full h-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div className="p-4 h-full flex items-center">
+        <div className="relative mx-auto flex w-full h-full flex-col justify-center space-y-6 sm:w-[380px] max-w-[380px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
               Sign in or create an account
