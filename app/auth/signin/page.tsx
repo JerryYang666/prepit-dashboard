@@ -142,7 +142,7 @@ export default function AuthenticationPage() {
             </h1>
             <p className="text-sm text-muted-foreground">
               Enter your email below to sign in. <br />
-              We&apos;ll create an account for you if you don't have one.
+              We&apos;ll create an account for you if you don&apos;t have one.
             </p>
           </div>
           <UserAuthForm />
