@@ -44,6 +44,7 @@
     "date-fns": "^2.30.0",
     "eslint": "^8.48.0",
     "eslint-config-next": "^14.1.4",
+    "input-otp": "^1.2.4",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^8.5.1",
     "lucide-react": "^0.365.0",
