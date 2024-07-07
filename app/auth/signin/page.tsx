@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ThemeToggle from "@/components/layout/ThemeToggle/theme-toggle";
 
 export default function AuthenticationPage() {
   const router = useRouter();
@@ -131,6 +132,9 @@ export default function AuthenticationPage() {
         </div>
       </div>
       <div className="p-4 h-full flex items-center">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
         <div className="relative mx-auto flex w-full h-full flex-col justify-center space-y-6 sm:w-[380px] max-w-[380px]">
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
