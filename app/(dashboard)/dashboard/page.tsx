@@ -1,3 +1,4 @@
+"use client";
 import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { Overview } from "@/components/overview";
 import { RecentSales } from "@/components/recent-sales";
@@ -12,8 +13,19 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquareText, Clock10, BookCheck, Users } from "lucide-react";
+import { useEffect } from "react";
+import { ping } from "@/app/api/auth/auth";
+import Cookies from "js-cookie";
 
 export default function page() {
+
+  useEffect(() => {
+    // refresh token if there is a refresh token and access token is expired
+    if (Cookies.get("refresh_token") && !Cookies.get("access_token")) {
+      ping();
+    }
+  }, []);
+
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

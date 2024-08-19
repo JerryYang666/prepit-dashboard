@@ -31,6 +31,7 @@ const api = {
   getGoogleSignInUrl: "/get_google_signin_url",
   getEmailOtp: "/email/get_email_otp",
   emailSignIn: "/email/email_signin",
+  ping: "/ping",
 };
 
 export function getGoogleSignInUrl(
@@ -55,5 +56,12 @@ export function emailSignIn(data: EmailSignInRequest): Promise<EmailSignInRespon
     url: api.emailSignIn,
     method: "post",
     data,
+  });
+}
+
+export function ping(): Promise<void> {
+  return request({
+    url: api.ping,
+    method: "get",
   });
 }
