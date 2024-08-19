@@ -8,11 +8,12 @@ interface GetNewThreadResponse {
   thread_id: string;
 }
 
-interface GetThreadListRequest {
+export interface GetThreadListRequest {
   page: number;
   page_size: number;
   search: string;
   workspace_id: string;
+  admin_mode?: boolean;
 }
 
 export interface ThreadListItem {
@@ -24,6 +25,8 @@ export interface ThreadListItem {
   workspace_id: string;
   last_trial_timestamp: string;
   status: "Finished" | "In Progress";
+  student_id?: string;
+  user_name?: string;
 }
 
 interface GetThreadListResponse {
