@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { NavItem } from "@/types";
 import { Dispatch, SetStateAction } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface DashboardNavProps {
   items: NavItem[];
@@ -42,6 +43,11 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
               >
                 <Icon className="mr-2 h-4 w-4" />
                 <span>{item.title}</span>
+                {item.teacherOnly && (
+                  <Badge variant="outline" className="ml-1">
+                    Admin
+                  </Badge>
+                )}
               </span>
             </Link>
           )
