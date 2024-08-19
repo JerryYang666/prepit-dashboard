@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { ping } from "@/app/api/auth/auth";
 import Cookies from "js-cookie";
 
-export default function page() {
+export default function Page() {
 
   useEffect(() => {
     // refresh token if there is a refresh token and access token is expired
