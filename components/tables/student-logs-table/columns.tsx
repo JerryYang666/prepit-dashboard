@@ -18,12 +18,16 @@ type ContextAwareButtonProps = {
   workspace_id: string;
   thread_id: string;
   status: "Finished" | "In Progress";
+  student_id: string;
+  user_name: string;
 };
 
 const ContextAwareButtons = ({
   workspace_id,
   thread_id,
   status,
+  student_id,
+  user_name,
 }: ContextAwareButtonProps) => {
   const { user } = usePrepitUserSession();
   const devMode =
@@ -31,7 +35,7 @@ const ContextAwareButtons = ({
   return (
     <>
       <Link
-        href={`/dashboard/student-logs/view/${thread_id}${devMode ? "?devMode=true" : ""}`}
+        href={`/dashboard/student-logs/view/${thread_id}?studentName=${user_name}&studentID=${student_id}${devMode ? "&devMode=true" : ""}`}
       >
         <Button variant={status === "Finished" ? "default" : "outline"}>
           View
@@ -103,6 +107,8 @@ export const columns: ColumnDef<InterviewHistory>[] = [
             workspace_id={row.getValue("workspace_id")}
             thread_id={row.getValue("thread_id")}
             status={row.getValue("status")}
+            student_id={row.getValue("student_id")}
+            user_name={row.getValue("user_name")}
           />
         </div>
       );

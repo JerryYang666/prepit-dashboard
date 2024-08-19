@@ -53,11 +53,21 @@ export default function ViewInterview() {
     [],
   );
   const [devMode, setDevMode] = useState(false);
+  const [studentName, setStudentName] = useState("Student");
+  const [studentID, setStudentID] = useState("-");
 
   useEffect(() => {
     const devModeLocal =
       new URLSearchParams(window.location.search).get("devMode") === "true";
     setDevMode(devModeLocal);
+    const studentNameLocal = new URLSearchParams(window.location.search).get(
+      "studentName",
+    );
+    setStudentName(studentNameLocal || "Student");
+    const studentIDLocal = new URLSearchParams(window.location.search).get(
+      "studentID",
+    );
+    setStudentID(studentIDLocal || "-");
   }, []);
 
   useEffect(() => {
@@ -185,8 +195,8 @@ export default function ViewInterview() {
       <BreadCrumb items={breadcrumbItems} />
       <div className="flex items-start justify-between">
         <Heading
-          title="Your Interview"
-          description="View your interview and feedback here"
+          title={`${studentName}'s Interview`}
+          description={`Student ID: ${studentID}`}
         />
         <div className="flex flex-col items-end w-1/2">
           <p className="mr-1 text-gray-500 text-sm w-1/3 min-w-fit">
