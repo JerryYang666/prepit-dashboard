@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { navItems } from "@/constants/data";
 import { MenuIcon } from "lucide-react";
 import { useState } from "react";
+import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 
 // import { Playlist } from "../data/playlists";
 
@@ -12,7 +13,13 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function MobileSidebar({ className }: SidebarProps) {
+  const { userCanManageWorkspace } = usePrepitUserSession();
   const [open, setOpen] = useState(false);
+
+  const filteredNavItems = navItems.filter(
+    (item) => !item.teacherOnly || (item.teacherOnly && userCanManageWorkspace),
+  );
+
   return (
     <>
       <Sheet open={open} onOpenChange={setOpen}>
@@ -26,7 +33,7 @@ export function MobileSidebar({ className }: SidebarProps) {
                 Menu
               </h2>
               <div className="space-y-1">
-                <DashboardNav items={navItems} setOpen={setOpen} />
+                <DashboardNav items={filteredNavItems} setOpen={setOpen} />
               </div>
             </div>
           </div>
