@@ -44,7 +44,7 @@ export function DashboardNav({ items, setOpen }: DashboardNavProps) {
                 <Icon className="mr-2 h-4 w-4" />
                 <span>{item.title}</span>
                 {item.teacherOnly && (
-                  <Badge variant="outline" className="ml-1">
+                  <Badge variant="outline" className="absolute right-5">
                     Admin
                   </Badge>
                 )}
