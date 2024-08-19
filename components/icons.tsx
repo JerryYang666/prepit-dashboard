@@ -34,6 +34,8 @@ import {
   CircleUserRound,
   LogOut,
   Copy,
+  UserCog,
+  Logs,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -110,6 +112,8 @@ export const Icons = {
     </svg>
   ),
   caseBook: BookMarked,
+  students: UserCog,
+  logs: Logs,
   interviews: BotMessageSquare,
   feedback: AlignStartVertical,
   check: Check,
