@@ -36,6 +36,7 @@ import {
   Copy,
   UserCog,
   Logs,
+  CirclePlus,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -119,4 +120,5 @@ export const Icons = {
   check: Check,
   search: Search,
   copy: Copy,
+  joinWorkspace: CirclePlus,
 };

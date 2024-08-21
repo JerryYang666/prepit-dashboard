@@ -26,13 +26,13 @@ export default function page() {
         </div>
         <Separator />
 
-        <Card className="w-1/2 p-2">
+        {/* <Card className="w-1/2 p-2">
           {
             "This is where teachers can manage students in the course. Work in progress, coming soon."
           }
-        </Card>
+        </Card> */}
 
-        {/* <Students /> */}
+        <Students />
       </div>
     </ScrollArea>
   );

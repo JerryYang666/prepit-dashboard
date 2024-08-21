@@ -31,6 +31,11 @@ export interface RemoveStudentFromWorkspaceRequest {
   user_id?: number;
 }
 
+export interface StudentJoinWorkspaceRequest {
+  workspace_id: string;
+  password: string;
+}
+
 // API full path: /v1/dev/admin/workspaces/xxx
 const path = "workspace";
 
@@ -38,6 +43,7 @@ const api = {
   listUsers: path + "/list_users",
   addStudents: path + "/add_authorized_users",
   removeStudent: path + "/delete_user",
+  studentJoinWorkspace: path + "/join",
 };
 
 // Get a list of users in a workspace (GET)
@@ -68,6 +74,17 @@ export function removeStudentFromWorkspace(
 ): Promise<void> {
   return request({
     url: api.removeStudent,
+    method: "post",
+    data: params,
+  });
+}
+
+// Student join workspace (POST)
+export function studentJoinWorkspace(
+  params: StudentJoinWorkspaceRequest,
+): Promise<void> {
+  return request({
+    url: api.studentJoinWorkspace,
     method: "post",
     data: params,
   });
