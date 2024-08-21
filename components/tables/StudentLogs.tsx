@@ -21,17 +21,21 @@ import { DataTable } from "./student-logs-table/student-logs-table";
 import { Icons } from "@/components/icons";
 import { usePrepitUserSession } from "@/contexts/PrepitUserSessionContext";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function StudentLogs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [workspaces, setWorkspaces] = useState<string[]>([]);
-  const [selectedWorkspace, setSelectedWorkspace] = useState<string>("Please select a casebook");
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>(
+    "Please select a casebook",
+  );
   const [threads, setThreads] = useState<ThreadListItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalThreads, setTotalThreads] = useState(0);
   const { user } = usePrepitUserSession();
   const pageSize = 10;
+  const router = useRouter();
 
   const fetchThreads = (page: number, workspace_id: string) => {
     if (workspace_id === "Please select a casebook") {
@@ -56,8 +60,13 @@ export default function StudentLogs() {
   useEffect(() => {
     // get all keys in user.workspace_roles where the value is "teacher"
     const userWorkspaces = Object.keys(user?.workspace_role || {}).filter(
-      (key) => user?.workspace_role[key] === "teacher"
+      (key) => user?.workspace_role[key] === "teacher",
     );
+    // if user is not a teacher in any workspace, redirect to the home page
+    if (userWorkspaces.length === 0) {
+      toast.error("You do not have access to admin pages");
+      router.push("/dashboard");
+    }
     setWorkspaces(["Please select a casebook", ...userWorkspaces]);
   }, [user]);
 
@@ -84,7 +93,10 @@ export default function StudentLogs() {
           <span className="text-sm font-semibold hidden sm:block">
             CaseBook:
           </span>
-          <Select onValueChange={handleWorkspaceChange} defaultValue="Please select a casebook">
+          <Select
+            onValueChange={handleWorkspaceChange}
+            defaultValue="Please select a casebook"
+          >
             <SelectTrigger className="w-1/3 mr-1">
               <SelectValue />
             </SelectTrigger>
