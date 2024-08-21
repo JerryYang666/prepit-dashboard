@@ -123,18 +123,18 @@ export default function Page() {
             </div>
           </TabsContent> */}
           <TabsContent value="overview" className="space-y-4">
-            <p>
+            <Card className="p-4 w-1/2">
               Data Dashboard Coming Soon... Please go to Case Books to start
               practicing. Or go to "Interviews" to view your interviews.
-            </p>
+            </Card>
           </TabsContent>
           <TabsContent value="analytics" className="space-y-4">
             {/* <CalendarDateRangePicker />
             <Button>Download Report</Button> */}
-            <p>
+            <Card className="p-4 w-1/2">
               Data Dashboard Coming Soon... Please go to Case Books to start
               practicing. Or go to "Interviews" to view your interviews.
-            </p>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
