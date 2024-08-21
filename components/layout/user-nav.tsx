@@ -81,8 +81,11 @@ export function UserNav() {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={profileImgUrl} alt={firstName} />
+            <Avatar className="h-8 w-8 border">
+              {/* TODO: get a real solution for this */}
+              {!profileImgUrl.includes(firstName) && (
+                <AvatarImage src={profileImgUrl} alt={firstName} />
+              )}
               <AvatarFallback>{firstName[0] + lastName[0]}</AvatarFallback>
             </Avatar>
           </Button>
