@@ -18,7 +18,6 @@ import { ping } from "@/app/api/auth/auth";
 import Cookies from "js-cookie";
 
 export default function Page() {
-
   useEffect(() => {
     // refresh token if there is a refresh token and access token is expired
     if (Cookies.get("refresh_token") && !Cookies.get("access_token")) {
@@ -39,7 +38,7 @@ export default function Page() {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
-          <TabsContent value="overview" className="space-y-4">
+          {/* <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -122,6 +121,20 @@ export default function Page() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent> */}
+          <TabsContent value="overview" className="space-y-4">
+            <p>
+              Data Dashboard Coming Soon... Please go to Case Books to start
+              practicing. Or go to "Interviews" to view your interviews.
+            </p>
+          </TabsContent>
+          <TabsContent value="analytics" className="space-y-4">
+            {/* <CalendarDateRangePicker />
+            <Button>Download Report</Button> */}
+            <p>
+              Data Dashboard Coming Soon... Please go to Case Books to start
+              practicing. Or go to "Interviews" to view your interviews.
+            </p>
           </TabsContent>
         </Tabs>
       </div>
