@@ -4,6 +4,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   WorkspaceUser,
   removeStudentFromWorkspace,
   RemoveStudentFromWorkspaceRequest,
@@ -39,14 +50,29 @@ const ContextAwareButtons = ({
   return (
     <>
       {role !== "teacher" && (
-        <Button
-          variant="outline"
-          className="text-red-600"
-          onClick={removeUserFromWorkspace}
-          size={"sm"}
-        >
-          Remove
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="text-red-600" size={"sm"}>
+              Remove
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                user from this workspace. After deletion, please re-select casebook 
+                to see the updated list of students.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={removeUserFromWorkspace} className="bg-red-600">
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </>
   );
