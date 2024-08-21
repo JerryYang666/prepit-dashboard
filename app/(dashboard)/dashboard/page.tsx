@@ -125,7 +125,7 @@ export default function Page() {
           <TabsContent value="overview" className="space-y-4">
             <Card className="p-4 w-1/2">
               Data Dashboard Coming Soon... Please go to Case Books to start
-              practicing. Or go to "Interviews" to view your interviews.
+              practicing. Or go to Interviews to view your interviews.
             </Card>
           </TabsContent>
           <TabsContent value="analytics" className="space-y-4">
@@ -133,7 +133,7 @@ export default function Page() {
             <Button>Download Report</Button> */}
             <Card className="p-4 w-1/2">
               Data Dashboard Coming Soon... Please go to Case Books to start
-              practicing. Or go to "Interviews" to view your interviews.
+              practicing. Or go to Interviews to view your interviews.
             </Card>
           </TabsContent>
         </Tabs>
