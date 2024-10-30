@@ -70,6 +70,10 @@ export default function StudentLogs() {
     setWorkspaces(["Please select a casebook", ...userWorkspaces]);
   }, [user]);
 
+  useEffect(() => {
+    fetchThreads(currentPage, selectedWorkspace);
+  }, [currentPage]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
