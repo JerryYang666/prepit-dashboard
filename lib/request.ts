@@ -78,7 +78,7 @@ instance.interceptors.request.use(
         const firstLevelDomain =
           "." + window.location.hostname.split(".").slice(-2).join(".");
         Cookies.set("access_token", new_access_token, {
-          expires: 1 / 48,
+          expires: 29 / (24 * 60),
           domain: firstLevelDomain,
         });
         window.dispatchEvent(new Event("accessTokenAutoRefreshed"));

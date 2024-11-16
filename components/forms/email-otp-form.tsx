@@ -66,14 +66,14 @@ export const EmailOtpForm: React.FC<EmailOtpFormProps> = ({
         return;
       }
 
-      // refresh token valid for 15 days, under the domain first level domain
+      // refresh token valid for 30 days, under the domain first level domain
       Cookies.set("refresh_token", refresh, {
         expires: 30,
         domain: firstLevelDomain,
       });
       // access token valid for 30 minutes
       Cookies.set("access_token", access, {
-        expires: 1 / 48,
+        expires: 29 / (24 * 60),
         domain: firstLevelDomain,
       });
 
