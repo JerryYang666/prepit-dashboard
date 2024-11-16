@@ -108,8 +108,12 @@ export default function Students() {
     const filteredStudents = studentsArray.filter((student) => student !== "");
     // trim whitespace
     const trimmedStudents = filteredStudents.map((student) => student.trim());
+    // remove "@case.edu"
+    const removedCaseEdu = trimmedStudents.map((student) =>
+      student.replace("@case.edu", ""),
+    );
     // remove duplicates
-    const uniqueStudents = [...new Set(filteredStudents)];
+    const uniqueStudents = [...new Set(removedCaseEdu)];
     setStudentsToAdd(uniqueStudents);
   };
 
