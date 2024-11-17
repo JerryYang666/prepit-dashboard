@@ -31,24 +31,26 @@ const ContextAwareButtons = ({
     user?.system_admin || user?.workspace_role[workspace_id] === "teacher";
   return (
     <>
-      <Button
-        onClick={() => {
-          window.open(
-            `${prepitInterviewPageUrl}/${thread_id}${
-              devMode ? "?devMode=true" : ""
-            }`,
-            "_blank",
-          );
-        }}
-        variant={status === "Finished" ? "outline" : "default"}
-      >
-        {status === "Finished" ? "Feedback" : "Continue"}
-      </Button>
+      {status === "In Progress" && (
+        <Button
+          onClick={() => {
+            window.open(
+              `${prepitInterviewPageUrl}/${thread_id}${
+                devMode ? "?devMode=true" : ""
+              }`,
+              "_blank",
+            );
+          }}
+          variant={"default"}
+        >
+          {"Continue"}
+        </Button>
+      )}
       <Link
         href={`/dashboard/interview/view/${thread_id}${devMode ? "?devMode=true" : ""}`}
       >
         <Button variant={status === "Finished" ? "default" : "outline"}>
-          View
+          {status === "Finished" ? "View Feedback" : "View"}
         </Button>
       </Link>
     </>
