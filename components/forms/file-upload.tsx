@@ -81,15 +81,22 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
     setUploadCount(Object.keys(updatedUploads).length);
   };
 
+  const resetUploadButton = () => {
+    setConfirmUploadButtonText("Confirm Upload");
+    setConfirmUploadButtonDisabled(false);
+  };
+
   const handleUpload = async () => {
     setConfirmUploadButtonText("Uploading...");
     setConfirmUploadButtonDisabled(true);
     if (!file) {
       toast.error("Please select a file to upload.");
+      resetUploadButton();
       return;
     }
     if (!fileName) {
       toast.error("Please enter a name for the file.");
+      resetUploadButton();
       return;
     }
     if (file && fileName) {
@@ -211,7 +218,11 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
             />
           </div>
           <DialogFooter>
-            <Button color="primary" onClick={handleUpload} disabled={confirmUploadButtonDisabled}>
+            <Button
+              color="primary"
+              onClick={handleUpload}
+              disabled={confirmUploadButtonDisabled}
+            >
               {confirmUploadButtonText}
             </Button>
           </DialogFooter>
