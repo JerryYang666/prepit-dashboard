@@ -81,6 +81,10 @@ export default function Students() {
     setWorkspaces(["Please select a casebook", ...userWorkspaces]);
   }, [user]);
 
+  useEffect(() => {
+    fetchStudents(currentPage, selectedWorkspace);
+  }, [currentPage]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
